@@ -1,0 +1,47 @@
+<h1><code ng:non-bindable="">jqmTextinput</code>
+<div><span class="hint">directive in module <code ng:non-bindable="">jqm</code>
+</span>
+</div>
+</h1>
+<div><h2 id="description">Description</h2>
+<div class="description"><div class="jqm-directive-page jqm-directive-jqmtextinput-page"><p>Creates an jquery mobile input on the given element.</p>
+</div></div>
+<h2 id="usage">Usage</h2>
+<div class="usage">as attribute<pre class="prettyprint linenums">&lt;ANY jqm-textinput
+     ng-model="{string}"
+     [type="{string}"]
+     [disabled]
+     [mini="{string}"]
+     [clear-btn="{boolean}"]
+     [clear-btn-text="{string}"]
+     [placeholder="{string}"]&gt;
+   ...
+&lt;/ANY&gt;</pre>
+<h4 id="usage_parameters">Parameters</h4><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>ngModel</td><td><a href="" class="label type-hint type-hint-string">string</a></td><td><div class="jqm-directive-page jqm-directive-jqmtextinput-page"><p>Assignable angular expression to data-bind to.</p>
+</div></td></tr><tr><td>type <div><em>(optional)</em></div></td><td><a href="" class="label type-hint type-hint-string">string</a></td><td><div class="jqm-directive-page jqm-directive-jqmtextinput-page"><p>Defines the type attribute for the resulting input. Default is &#39;text&#39;.</p>
+</div></td></tr><tr><td>disabled <div><em>(optional)</em></div></td><td><a href="" class="label type-hint type-hint-string">string</a></td><td><div class="jqm-directive-page jqm-directive-jqmtextinput-page"><p>Whether this input is disabled.</p>
+</div></td></tr><tr><td>mini <div><em>(optional)</em></div></td><td><a href="" class="label type-hint type-hint-string">string</a></td><td><div class="jqm-directive-page jqm-directive-jqmtextinput-page"><p>Whether this input is mini.</p>
+</div></td></tr><tr><td>clearBtn <div><em>(optional)</em></div></td><td><a href="" class="label type-hint type-hint-boolean">boolean</a></td><td><div class="jqm-directive-page jqm-directive-jqmtextinput-page"><p>Whether this input should show a clear button to clear the input.</p>
+</div></td></tr><tr><td>clearBtnText <div><em>(optional)</em></div></td><td><a href="" class="label type-hint type-hint-string">string</a></td><td><div class="jqm-directive-page jqm-directive-jqmtextinput-page"><p>Defines the tooltip text for the clear Button. Default is &#39;clear text&#39;.</p>
+</div></td></tr><tr><td>placeholder <div><em>(optional)</em></div></td><td><a href="" class="label type-hint type-hint-string">string</a></td><td><div class="jqm-directive-page jqm-directive-jqmtextinput-page"><p>Defines the placholder value for the input Element.</p>
+</div></td></tr></tbody></table></div>
+<h2 id="example">Example</h2>
+<div class="example"><div class="jqm-directive-page jqm-directive-jqmtextinput-page"><h4 id="example_source">Source</h4>
+<div source-edit="jqm" source-edit-deps="angular.js" source-edit-html="index.html-12" source-edit-css="" source-edit-js="" source-edit-json="" source-edit-unit="" source-edit-scenario=""></div>
+<div class="tabbable"><div class="tab-pane" title="index.html">
+<pre class="prettyprint linenums" ng-set-text="index.html-12" ng-html-wrap-loaded="jqm angular.js"></pre>
+<script type="text/ng-template" id="index.html-12">
+Text Input:
+<div jqm-textinput ng-model="value"></div>
+<p/>
+Text Input: clear-btn="true"
+<div jqm-textinput ng-model="value" clear-btn="true"></div>
+<hl/>
+Search Input:
+<div jqm-textinput ng-model="search" type="search"></div>
+</script>
+</div>
+</div><h4 id="example_demo">Demo</h4>
+<div class="well doc-example-live animate-container" ng-embed-app="jqm" ng-set-html="index.html-12" ng-eval-javascript=""></div>
+</div></div>
+</div>

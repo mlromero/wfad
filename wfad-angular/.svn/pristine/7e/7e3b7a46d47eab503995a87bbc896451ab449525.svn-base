@@ -1,0 +1,26 @@
+<h1><code ng:non-bindable="">jqmConfigProvider</code>
+<div><span class="hint">service in module <code ng:non-bindable="">jqm</code>
+</span>
+</div>
+</h1>
+<div><h2 id="description">Description</h2>
+<div class="description"><div class="jqm-jqmconfigprovider-page"><p>Used to configure the default theme.</p>
+</div></div>
+<div class="member method"><h2 id="methods">Methods</h2>
+<ul class="methods"><li><h3 id="methods_primarytheme">primaryTheme(newTheme)</h3>
+<div class="primarytheme"><div class="jqm-jqmconfigprovider-primarytheme-page"><p>Sets/gets the default primary theme (used if jqm-theme is
+not set on the element). Default: &#39;c&#39;</p>
+</div><h5 id="methods_primarytheme_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>newTheme <div><em>(optional)</em></div></td><td><a href="" class="label type-hint type-hint-string">string</a></td><td><div class="jqm-jqmconfigprovider-primarytheme-page"><p>The new primary theme to set.</p>
+</div></td></tr></tbody></table><h5 id="methods_primarytheme_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-string">string</a></td><td><div class="jqm-jqmconfigprovider-primarytheme-page"><p>The current primary theme.</p>
+</div></td></tr></table></div>
+</li>
+<li><h3 id="methods_secondarytheme">secondaryTheme(newTheme)</h3>
+<div class="secondarytheme"><div class="jqm-jqmconfigprovider-secondarytheme-page"><p>Sets/gets the secondary theme (used on footers, headers, etc
+if not theme is set on the element). Default: &#39;a&#39;</p>
+</div><h5 id="methods_secondarytheme_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>newTheme <div><em>(optional)</em></div></td><td><a href="" class="label type-hint type-hint-string">string</a></td><td><div class="jqm-jqmconfigprovider-secondarytheme-page"><p>The new secondary theme to set.</p>
+</div></td></tr></tbody></table><h5 id="methods_secondarytheme_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-string">string</a></td><td><div class="jqm-jqmconfigprovider-secondarytheme-page"><p>The current secondary theme.</p>
+</div></td></tr></table></div>
+</li>
+</ul>
+</div>
+</div>

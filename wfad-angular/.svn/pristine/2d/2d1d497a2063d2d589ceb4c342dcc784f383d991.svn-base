@@ -1,0 +1,30 @@
+<h1><code ng:non-bindable="">jqmTheme</code>
+<div><span class="hint">directive in module <code ng:non-bindable="">jqm</code>
+</span>
+</div>
+</h1>
+<div><h2 id="description">Description</h2>
+<div class="description"><div class="jqm-directive-page jqm-directive-jqmtheme-page"><p>Sets the jqm theme for this element and it&#39;s children by adding a <code>$theme</code> property to the scope.
+Other directives like <code>jqmCheckbox</code> evaluate that property.</p>
+</div></div>
+<h2 id="usage">Usage</h2>
+<div class="usage">as attribute<pre class="prettyprint linenums">&lt;ANY jqm-theme&gt;
+   ...
+&lt;/ANY&gt;</pre>
+</div>
+<h2 id="example">Example</h2>
+<div class="example"><div class="jqm-directive-page jqm-directive-jqmtheme-page"><h4 id="example_source">Source</h4>
+<div source-edit="jqm" source-edit-deps="angular.js" source-edit-html="index.html-13" source-edit-css="" source-edit-js="" source-edit-json="" source-edit-unit="" source-edit-scenario=""></div>
+<div class="tabbable"><div class="tab-pane" title="index.html">
+<pre class="prettyprint linenums" ng-set-text="index.html-13" ng-html-wrap-loaded="jqm angular.js"></pre>
+<script type="text/ng-template" id="index.html-13">
+<div>
+  <div jqm-checkbox jqm-theme="a">Theme a</div>
+  <div jqm-checkbox jqm-theme="b">Theme b</div>
+</div>
+</script>
+</div>
+</div><h4 id="example_demo">Demo</h4>
+<div class="well doc-example-live animate-container" ng-embed-app="jqm" ng-set-html="index.html-13" ng-eval-javascript=""></div>
+</div></div>
+</div>

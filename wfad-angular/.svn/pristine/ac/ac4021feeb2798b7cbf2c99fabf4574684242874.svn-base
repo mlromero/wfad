@@ -1,0 +1,79 @@
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+<%@ page session="false"%>
+
+<html lang="en" ng-app="workflow">
+<head>
+    <title>Workflow adhoc</title>
+    <meta charset="utf-8">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.2/jquery.mobile-1.4.2.css"></link> 
+    <link rel="stylesheet" type="text/css" href="resources/css/map.css" />
+    
+    <script type="text/javascript" src="http://code.jquery.com/jquery-2.1.1.js"></script>
+	<script type="text/javascript" src="http://code.jquery.com/mobile/1.4.3/jquery.mobile-1.4.3.js"></script>
+   
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular.min.js"></script>
+   <!--  <script src="resources/js/jquery-mobile-angular-adapter-standalone.js" type="text/javascript"></script> -->
+   
+   <script src="resources/js/jqm-angular/angular-jqm.js" type="text/javascript"></script>
+    
+    <script src="http://maps.googleapis.com/maps/api/js?sensor=false"></script> 
+    <script type="text/javascript" src="resources/js/googlemaps/lodash.underscore.js"></script> 
+    <script type="text/javascript" src="resources/js/googlemaps/angular-google-maps.js"></script> 
+    
+    <!-- dropdown con imagenes -->
+	<script type="text/javascript" src="resources/js/dropdown/jquery.min.js"></script>
+	<script type="text/javascript" src="resources/js/dropdown/jquery.ddslick.min.js"></script> 
+	<!-- fin dropdown con imagenes --> 
+    
+    
+    <script type="text/javascript" src="resources/js/model/app.js"></script>
+    <script type="text/javascript" src="resources/js/model/map.js"></script>
+	
+    
+    
+</head>
+<body>
+
+<div id="main" data-role="page"  class="ui-responsive-panel">
+    <div data-role="panel" id="mypanel">
+        Hello From Panel.
+       
+    </div>
+    
+    <div data-role="panel" id="add-form" data-position="right">    	
+    	<form name="tweetForm"  ng-controller="tweetController" 
+    							ng-submit="addTweet()" novalidate>    		
+    		<div id="myDropdown" class="target tipped tipper-attached"></div>
+    		<textarea name="txt" id="txt" class="tagged_text" data-mini="true" ng-model="tweet.txt" required></textarea>
+    		<div> Tweet is {{tweetForm.$valid}}</div>
+    		<input type="submit" value="Tweet" data-mini="true" id="tweet" />        
+    	</form>    	
+    </div>
+
+    <div data-role="header">
+        <h1>Hi ${name}.</h1>
+        <!-- Boton panel lateral izquierdo <a href="#mypanel">Open panel</a> -->
+		<a href="#mypanel" data-icon="gear" id="logout" data-iconpos="notext" onclick="#">Options</a>		
+				
+		<!-- Boton de panel lateral derecho -->
+		<a href="#add-form" data-icon="bars" data-iconpos="notext" onclick="#">Menu</a>
+         
+    </div>
+    
+    <div data-role="content" ng-controller="mapController">       
+        <google-map center="map.center" zoom="map.zoom" control="map.control"></google-map> 
+    </div>  
+        
+    <div data-role="footer" data-position="fixed">	
+		<h3>@Version 1.0.4</h3>
+	</div>
+</div>
+
+</body>
+</html>

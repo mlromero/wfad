@@ -1,0 +1,110 @@
+<h1><code ng:non-bindable="">jqmView</code>
+<div><span class="hint">directive in module <code ng:non-bindable="">jqm</code>
+</span>
+</div>
+</h1>
+<div><h2 id="description">Description</h2>
+<div class="description"><div class="jqm-directive-page jqm-directive-jqmview-page"><h3 id="description_overview">Overview</h3>
+<p><code>jqmView</code> extends <code>ngView</code> in the following way:</p>
+<ul>
+<li>animations can also be specified on routes using the <code>animation</code> property (see below).</li>
+<li>animations can also be specified in the template using the <code>view-animation</code> attribute on a root element.</li>
+<li>when the user hits the back button, the last animation is executed with the <code>-reverse</code> suffix.</li>
+<li>instead of using <code>$route</code> an expression can be specified as value of the directive. Whenever
+the value of this expression changes <code>jqmView</code> updates accordingly.</li>
+<li>content that has been declared inside of <code>ngView</code> stays there, so you can mix dynamically loaded content with
+fixed content.</li>
+</ul>
+</div></div>
+<h2 id="usage">Usage</h2>
+<div class="usage">as element:<pre class="prettyprint linenums">&lt;jqm-view
+       [jqm-view="{expression}"]&gt;
+&lt;/jqm-view&gt;</pre>
+as attribute<pre class="prettyprint linenums">&lt;ANY jqm-view="{expression}"&gt;
+   ...
+&lt;/ANY&gt;</pre>
+as class<pre class="prettyprint linenums">&lt;ANY class="jqm-view: {expression};"&gt;
+   ...
+&lt;/ANY&gt;</pre>
+<h3 id="usage_directive-info">Directive info</h3>
+<div class="directive-info"><ul><li>This directive creates new scope.</li>
+</ul>
+</div>
+<h4 id="usage_directive-info_parameters">Parameters</h4><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>jqmView <div><em>(optional)</em></div></td><td><a href="" class="label type-hint type-hint-expression">expression</a></td><td><div class="jqm-directive-page jqm-directive-jqmview-page"><p>angular expression evaluating to a route.</p>
+<ul>
+<li><code>{string}</code>: This will be interpreted as the url of a template.</li>
+<li><code>{object}</code>: A route object with the same properties as <code>$route.current</code>:</li>
+<li><code>templateUrl</code> - <code>{string=}</code> - the url for the template</li>
+<li><code>controller</code> - <code>{string=|function()=}</code> - the controller</li>
+<li><code>controllerAs</code> - <code>{string=}</code> - the name of the controller in the scope</li>
+<li><code>locals</code> - <code>{object=}</code> - locals to be used when instantiating the controller</li>
+<li><code>back</code> - <code>{boolean=}</code> - whether the animation should be executed in reverse</li>
+<li><code>animation</code> - <code>{string=|function()=}</code> - the animation to use. If <code>animation</code> is a function it will
+be called using the <code>$injector</code> with the extra locals <code>$routeParams</code> (<code>route.params</code>) and <code>$scope</code> (the scope of <code>jqm-view</code>).</li>
+</ul>
+</div></td></tr></tbody></table></div>
+<h2 id="example">Example</h2>
+<div class="example"><div class="jqm-directive-page jqm-directive-jqmview-page"><h4 id="example_source">Source</h4>
+<div source-edit="jqmView" source-edit-deps="angular.js script.js" source-edit-html="index.html-14 book.html chapter.html" source-edit-css="" source-edit-js="script.js-15" source-edit-json="" source-edit-unit="" source-edit-scenario=""></div>
+<div class="tabbable"><div class="tab-pane" title="index.html">
+<pre class="prettyprint linenums" ng-set-text="index.html-14" ng-html-wrap-loaded="jqmView angular.js script.js"></pre>
+<script type="text/ng-template" id="index.html-14">
+Choose:
+<a href="#/Book/Moby">Moby</a> |
+<a href="#/Book/Moby/ch/1">Moby: Ch1</a> |
+<a href="#/Book/Gatsby">Gatsby</a> |
+<a href="#/Book/Gatsby/ch/4?key=value">Gatsby: Ch4</a> |
+<a href="#/Book/Scarlet">Scarlet Letter</a><br/>
+
+<div jqm-view style="height:300px"></div>
+</script>
+</div>
+<div class="tab-pane" title="book.html">
+<pre class="prettyprint linenums" ng-set-text="book.html"></pre>
+<script type="text/ng-template" id="book.html">
+<div jqm-page>
+<div jqm-header><h3 id="example_book-{{bookparamsbookid}}">Book {{book.params.bookId}}</h3></div>
+The book contains ...
+</div>
+</script>
+</div>
+<div class="tab-pane" title="chapter.html">
+<pre class="prettyprint linenums" ng-set-text="chapter.html"></pre>
+<script type="text/ng-template" id="chapter.html">
+<div jqm-page>
+<div jqm-header><h3 id="example_chapter-{{chapterparamschapterid}}-of-{{chapterparamsbookid}}">Chapter {{chapter.params.chapterId}} of {{chapter.params.bookId}}</h3></div>
+This chapter contains ...
+</div>
+</script>
+</div>
+<div class="tab-pane" title="script.js">
+<pre class="prettyprint linenums" ng-set-text="script.js-15"></pre>
+<script type="text/ng-template" id="script.js-15">
+angular.module('jqmView', ['jqm'], function($routeProvider) {
+     $routeProvider.when('/Book/:bookId', {
+     templateUrl: 'book.html',
+     controller: BookCntl,
+     controllerAs: 'book',
+     animation: 'page-slide'
+     });
+     $routeProvider.when('/Book/:bookId/ch/:chapterId', {
+     templateUrl: 'chapter.html',
+     controller: ChapterCntl,
+     controllerAs: 'chapter',
+     animation: 'page-slide'
+     });
+   });
+
+function BookCntl($routeParams) {
+     this.params = $routeParams;
+   }
+
+function ChapterCntl($routeParams) {
+     this.params = $routeParams;
+   }
+</script>
+</div>
+</div><h4 id="example_chapter-{{chapterparamschapterid}}-of-{{chapterparamsbookid}}_demo">Demo</h4>
+<div class="well doc-example-live animate-container" ng-embed-app="jqmView" ng-set-html="index.html-14" ng-eval-javascript="script.js-15"></div>
+</div></div>
+</div>

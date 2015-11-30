@@ -1,0 +1,122 @@
+package cl.uchile.workflow.persistance;
+
+import java.util.List;
+
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
+
+import org.hibernate.Hibernate;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
+
+import cl.uchile.workflow.persistance.model.Session;
+import cl.uchile.workflow.persistance.model.User;
+
+@Repository
+public class UsersDAO {
+	@PersistenceContext
+	private EntityManager em;
+
+	@Transactional
+	public boolean save(User user) {
+		TypedQuery<User> q = em.createQuery("FROM User u where u.user=:user",
+				User.class);
+		q.setParameter("user", user.getUser());
+		if (q.getResultList().size() == 0) {
+			em.persist(user);
+			return true;
+		}
+		return false;
+	}
+
+	@Transactional
+	public boolean save(Session session, String user) {
+		TypedQuery<Session> q = em.createQuery(
+				"FROM Session s where s.sessionID=:session", Session.class);
+		q.setParameter("session", session.getSessionID());
+
+		if (q.getResultList().size() == 0) {
+			User userd = this.byName(user);
+			session.getUsers().add(userd);
+
+			em.persist(session);
+			userd.getSessions().add(session);
+			return true;
+		}
+		return false;
+	}
+
+	public boolean login(String user, String pass) {
+		TypedQuery<User> q = em.createQuery(
+				"FROM User u where u.user=:user and u.password=:pass",
+				User.class);
+		q.setParameter("user", user);
+		q.setParameter("pass", pass);
+		return q.getResultList().size() != 0;
+	}
+
+	@Transactional
+	public User byName(String user) {		
+		TypedQuery<User> q = em.createQuery("FROM User u where u.user=:user",
+				User.class);
+		q.setParameter("user", user);
+		try{
+			User userd = q.getSingleResult();
+			Hibernate.initialize(userd.getSessions());
+			return userd;		
+		}catch(javax.persistence.NoResultException e){
+			return null;
+		}
+	}
+	
+	@Transactional
+	public Session bySessionID(String sessionID){
+		TypedQuery<Session> q = em.createQuery(
+				"FROM Session s where s.sessionID=:session", Session.class);
+		return q.setParameter("session", sessionID).getSingleResult();
+	}
+	
+	@Transactional
+	public boolean joinUserToSession(String user,String session) {
+		try{
+			User userd=this.byName(user);
+			Session sessiond=this.bySessionID(session);
+			if(userd==null || sessiond==null)
+				return false;
+			if(userd.getSessions().contains(sessiond))
+				return true;
+			sessiond.getUsers().add(userd);
+			userd.getSessions().add(sessiond);
+			return true;
+		}catch(Exception e){
+			return false;
+		}
+	}
+	
+	@Transactional
+	public String[] getUsersBySessionID(String session){
+		try{
+			Session sessiond = this.bySessionID(session);
+			List<User> u = sessiond.getUsers(); 
+			String[] name = new String[u.size()];			
+			for(int i=0;i< u.size(); i++){
+				name[i] = u.get(i).getUser();
+				System.out.println(name[i]);
+			}
+			
+			return name;
+		}catch(Exception e){
+			return null;
+		}
+	}
+	
+	@Transactional
+	public List<User> getAllUsers(){
+		TypedQuery<User> q = em.createQuery("FROM User u", User.class);
+		List<User> u = q.getResultList();
+		return u;		
+	}
+	
+	
+}

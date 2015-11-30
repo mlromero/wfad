@@ -1,0 +1,516 @@
+app.config(['GoogleMapApiProvider'.ns(), function (GoogleMapApi) {
+    GoogleMapApi.configure({
+        //    key: 'your api key',
+        v: '3.17',
+        libraries: 'weather,geometry,visualization'
+    });
+}]);
+
+
+
+app.service('loadGoogleMapAPI', ['$window', '$q', function ( $window, $q ) {	                                     
+        var deferred = $q.defer();
+        
+        
+        
+        // Load Google map API script
+        function loadScript() {  
+            // Use global document since Angular's $document is weak
+            var script = document.createElement('script');
+            script.src = '//maps.googleapis.com/maps/api/js?sensor=false&language=en&callback=initMap';
+            
+            document.body.appendChild(script);
+        }
+        
+        // Script loaded callback, send resolve
+        $window.initMap = function () {
+            deferred.resolve();
+        };
+        
+        loadScript();
+            
+        return deferred.promise;
+    }]); 
+
+
+app.factory('mapService', function($compile){
+	var mapService = {};
+	var overlays = {};
+	var infowindows = {};
+	var overlaysEncode = {};
+	var tweets = {};
+	
+	var map = null;
+	
+	var drawingManagerOptions = {
+		    //drawingMode: google.maps.drawing.OverlayType.MARKER,
+		    drawingControl: false,
+		    drawingControlOptions: {
+		      position: google.maps.ControlPosition.TOP_RIGHT,
+		        drawingModes: [
+		          google.maps.drawing.OverlayType.MARKER,
+		          google.maps.drawing.OverlayType.CIRCLE,
+		          google.maps.drawing.OverlayType.POLYGON,
+		          google.maps.drawing.OverlayType.POLYLINE,
+		          google.maps.drawing.OverlayType.RECTANGLE
+		        ]
+		    },
+		    markerOptions: {
+	  	        icon: 'http://maps.google.com/intl/en_us/mapfiles/ms/micons/blue-dot.png',
+	  	        draggable: true,
+	  	        clickable: true,
+	  	        zIndex: 1
+	  	      },
+		    circleOptions: {
+		    	fillColor: '#000000',
+	      	      fillOpacity: 0.2,
+	      	      strokeColor: '#5882FA',
+	      	      strokeWeight: 2,
+	      	      clickable: true,
+	      	      editable: true,
+	      	      draggable: true,
+	      	      zIndex: 1
+		      },
+		   	    polygonOptions: {
+		      	      fillColor: '#000000',
+		      	      fillOpacity: 0.2,
+		      	      strokeColor: '#5882FA',
+		      	      strokeWeight: 2,
+		      	      clickable: true,
+		      	      editable: true,
+		      	      draggable: true,
+		      	      zIndex: 1
+		      	},
+		  	    polylineOptions: {        	    	
+		  	    	strokeColor: '#5882FA',
+		      	    strokeWeight: 2,
+		      	    clickable: true,
+		      	    editable: true,
+		      	    draggable: true,
+		      	    zIndex: 1
+		      	},
+		  	    rectangleOptions: {
+		    	      fillColor: '#000000',
+		    	      fillOpacity: 0.2,
+		    	      strokeColor: '#5882FA',
+		    	      strokeWeight: 2,
+		    	      clickable: true,
+		    	      editable: true,
+		    	      draggable: true,
+		    	      zIndex: 1
+		    	    }
+		    };
+	
+	
+	
+	mapService.setDrawingControl = function(value){
+		drawingManagerOptions.drawingControl = value;
+	};
+	
+	mapService.getDrawingManagerOptions = function(){
+		return drawingManagerOptions;
+	};
+	
+	mapService.getDrawingControl = function(){
+		return drawingManagerOptions.drawingControl;
+	};
+	
+	mapService.pushOverlay = function(overlay, overlayEncode, s){		
+		overlays[s] = overlay;
+		console.log("overlayEncode :"+ overlayEncode);
+		overlaysEncode[s] = overlayEncode;	
+		
+	};
+	
+	mapService.removeOverlay = function(index, size){
+		
+		overlays[index].setVisible(false);
+		if(index < size){
+			overlays[index] = null;
+			overlaysEncode[index] = null;
+		}			
+	};
+	
+	mapService.getOverlaysEncode = function(){
+		return overlaysEncode;
+	};
+	
+	mapService.getOverlays = function(){
+		return overlays;
+	};
+	
+	mapService.resetOverlays = function(){
+		overlays = {};
+		overlaysEncode = {};
+		infowindows = {};
+		
+		
+	};
+	
+	
+	
+	mapService.setInfowindows = function(index, value){
+		infowindows[index] = value;
+	};
+	
+	mapService.getInfowindows = function(index){
+		return infowindows[index];
+	};
+	
+	mapService.pushTweet = function(tweetId, overlay){
+		if(tweet[tweetId] == null || tweet[tweetId] == undefined)
+			tweet[tweetId] = [];
+		tweet[tweetId].push(overlay);			
+	};
+	
+	mapService.getTweet = function(tweetId){
+		return tweet[tweetId];
+	};
+	
+	mapService.addTweet = function(id, overlays){
+		tweet[id] = overlays;
+	};
+	
+	mapService.getMap = function(){
+		return map;
+	};
+	
+	mapService.setMap = function(m){
+		map = m;
+	};
+	
+	
+	return mapService;
+	
+});
+
+app.factory('sizeService', function(){
+	var sizeService = {};
+	var size = 0;
+	
+	sizeService.setSize = function(s){
+		size = s;
+	};
+	
+	sizeService.increment = function(){
+		size = size + 1;
+	};
+	
+	sizeService.getSize = function(){
+		return size;
+	};
+	
+	return sizeService;
+});
+
+
+app.controller('mapController',['$scope', '$compile', 'GoogleMapApi'.ns(), 'mapService', 'sizeService',function($scope, $compile, GoogleMapApi, mapService, sizeService){		
+	
+		 //do stuff with your $scope
+	    // it should be NOTED that some of the directives at least require something to be defined originally
+	    // ie:
+	    // $scope.markers = [] // and not undefined!
+		 
+	
+		$scope.map = {
+			    center: {
+			        latitude: -33.4374,
+			        longitude: -70.802
+			    },
+			    zoom: 15,
+			    control: {},
+			    bounds: {}, 
+			    events: {
+			    	tilesloaded: function (map, eventName, originalEventArgs) {
+			            //map is trueley ready then this callback is hit
+			    		//alert("Hi");
+			    		
+			          },
+			          idle: function(map, eventName, originalEventArgs){
+			        	  $scope.isCharging = false;
+			          }
+			
+			    },
+			    draggable: true
+			
+			    	
+			    
+		};
+		$scope.options = {scrollwheel: false};
+		$scope.drawingManagerOptions = mapService.getDrawingManagerOptions();
+		$scope.drawingManagerControl = {};
+		
+		$scope.isCharging = true;
+		
+		$scope.infowindows = {};
+	
+		$scope.overlays = mapService.getOverlays();	
+		
+		/*
+	    * GoogleMapApi is a promise with a
+	    * then callback of the google.maps object
+	    *   @pram: maps = google.maps
+	    */
+		GoogleMapApi.then(function(maps) {						
+			$scope.$watch(function() {
+				  return mapService.getDrawingControl();
+			}, function(newValue, oldValue) {	
+				if(newValue == true){
+					if(!$scope.drawingManagerControl.getDrawingManager)
+						return;
+					
+					dM = $scope.drawingManagerControl.getDrawingManager();
+					
+					maps.event.addListener(dM, 'overlaycomplete', function (event) {					
+						
+						var json = {};
+						if(event.type == google.maps.drawing.OverlayType.CIRCLE){
+							var circle = [];
+							circle.push(event.overlay.getCenter());
+							var lt = new google.maps.LatLng(event.overlay.getRadius(),event.overlay.getRadius());
+							circle.push(lt);
+							var circleEncode = google.maps.geometry.encoding.encodePath(circle);
+							json = {"type": event.type, "path": circleEncode};
+						}
+						else if(event.type == google.maps.drawing.OverlayType.MARKER){
+							
+							json = {"type": event.type, "path": google.maps.geometry.encoding.encodePath([event.overlay.getPosition()])};
+						}
+						else if(event.type == google.maps.drawing.OverlayType.POLYLINE || event.type == google.maps.drawing.OverlayType.POLYGON){			   				
+							json = {"type": event.type, "path": google.maps.geometry.encoding.encodePath(event.overlay.getPath())};
+						}
+						else if(event.type == google.maps.drawing.OverlayType.RECTANGLE){
+							var bound = event.overlay.getBounds();
+							var boundEncode = google.maps.geometry.encoding.encodePath([bound.getNorthEast(), bound.getSouthWest()]);
+							//console.log(boundEncode);
+							//console.log(google.maps.geometry.encoding.decodePath(boundEncode));
+							json = {"type": event.type, "path": boundEncode};
+						}						
+						
+						
+						var infowindow = new google.maps.InfoWindow();
+						var contenido = "<div><a href='' ng-click='removeOverlay("+sizeService.getSize()+");'><img src='resources/images/trash.png'/></a></div>";
+				 		var compiled = $compile(contenido)($scope);  
+				 		//$scope.infowindows[$scope.size] = infowindow;
+				 		mapService.pushOverlay(event.overlay, json, sizeService.getSize());
+				 		mapService.setInfowindows(sizeService.getSize(), infowindow);	
+				 		
+				 		sizeService.increment();
+				 		
+				 		mapService.setMap($scope.map.control.getGMap());
+				 		
+				 		
+				 		google.maps.event.addListener(
+				 			    event.overlay,
+				 			    'click',
+				 			    function(ev){
+				 			        $scope.$apply();//must be inside write new values for each marker				 			        
+				 			        infowindow.setContent(compiled[0]);
+				 			        if(event.overlay instanceof google.maps.Marker){
+				 						infowindow.open($scope.map.control.getGMap(), event.overlay);
+				 					}else{
+				 						infowindow.setPosition(ev.latLng);
+				 						infowindow.open($scope.map.control.getGMap());
+				 					}   
+				 			      });
+						
+			        });
+				}
+			});			
+			
+	    });
+		
+		$scope.removeOverlay = function(index){
+			console.log("removeOverlay: "+ index);
+			mapService.removeOverlay(index);
+			mapService.getInfowindows(index).close();
+			//$scope.infowindows[index].close();
+		};
+		
+		/*$scope.$watch(function() {
+			  return $scope.isCharging;
+		}, function(newValue, oldValue) {	
+			console.log(newValue);
+			if(!newValue){
+				$.mobile.loading( "hide" );
+				return;
+			}
+			
+			
+			var $this = $( this );
+			var theme = $this.jqmData( "theme" ) || $.mobile.loader.prototype.options.theme;
+			var msgText = $this.jqmData( "msgtext" ) || $.mobile.loader.prototype.options.text;
+			var textVisible = $this.jqmData( "textvisible" ) || $.mobile.loader.prototype.options.textVisible;
+			var textonly = !!$this.jqmData( "textonly" );
+			var html = $this.jqmData( "html" ) || "";
+			$.mobile.loading( "show", {text: msgText, textVisible: textVisible, theme: theme, textonly: textonly, html: html});		
+			
+				
+		});*/
+		
+		
+		$scope.addTweetToModel = function(tweetId, overlaysJSON, flowName){
+			var json = JSON.parse(overlaysJSON);			
+			console.log("MAP addTWEETTOMODEL");
+			var i = 0;		
+			var overlays = [];
+			var infoWin = [];
+			
+			
+			while(json[i] != null && json[i] != undefined){
+								
+				var decode = google.maps.geometry.encoding.decodePath(json[i].path);
+				console.log(decode.length);	
+				var overlay = null;					
+				var visibles = false;
+				
+				if(json[i].type == google.maps.drawing.OverlayType.CIRCLE){					
+					var circleOptions = {
+						      strokeColor: "#B40404",
+						      strokeWeight: 2,
+						      fillColor: "#000000",
+						      fillOpacity: 0.2,
+						      map: $scope.map.control.getGMap(),
+						      center: decode[0],
+						      radius: decode[1]['B'],
+						      clickable: true,
+						      editable: false,
+						      draggable: false,
+						      visible: visibles,
+						      zIndex: 1
+						    };
+					overlay = new google.maps.Circle(circleOptions);
+					
+					
+				}else if(json[i].type == google.maps.drawing.OverlayType.MARKER){
+					overlay = new google.maps.Marker({
+						position: decode[0], 
+						draggable: false,
+						editable: false,
+						visible: visibles,
+						clickable: true,
+						icon: "http://maps.google.com/mapfiles/ms/icons/red-dot.png",
+						map: $scope.map.control.getGMap()
+					});
+					
+					
+				}else if(json[i].type == google.maps.drawing.OverlayType.POLYLINE){
+					
+					var polylineOptions = {
+					  	      strokeColor: "#B40404",
+					  	      strokeWeight: 2,
+					  	      map: $scope.map.control.getGMap(),
+					  	      path: new google.maps.MVCArray(decode),
+					  	      clickable: true,
+					  	      editable: false,
+					  	      draggable: false,
+					  	      visible: visibles,
+					  	      zIndex: 1
+					  	    };
+					  overlay = new google.maps.Polyline(polylineOptions);
+					
+				}else if(json[i].type == google.maps.drawing.OverlayType.RECTANGLE){
+					//var bnd = decode;
+					var rectangleOptions = {
+					  	      strokeColor: "#B40404",
+					  	      strokeWeight: 2,
+					  	      fillColor: "#000000",
+					  	      fillOpacity: 0.2,
+					  	      map: $scope.map.control.getGMap(),
+					  	      bounds: new google.maps.LatLngBounds(decode[1], decode[0]),
+					  	      clickable: true,
+					  	      editable: false,
+					  	      draggable: false,
+					  	      visible: visibles,
+					  	      zIndex: 1
+					  	    };
+					  overlay = new google.maps.Rectangle(rectangleOptions);
+					
+				}else if(json[i].type == google.maps.drawing.OverlayType.POLYGON){
+					console.log("POLYGON");
+					var polygonOptions = {
+					  	      strokeColor: "#B40404",
+					  	      strokeWeight: 2,
+					  	      fillColor: "#000000",
+					  	      fillOpacity: 0.2,
+					  	      map: $scope.map.control.getGMap(),
+					  	      paths: new google.maps.MVCArray(decode),
+					  	      clickable: true,
+					  	      editable: false,
+					  	      draggable: false,
+					  	      visible: visibles,
+					  	      zIndex: 1
+					  	    };
+					  overlay = new google.maps.Polygon(polygonOptions);
+					  
+					  console.log(overlay);
+					  
+					 
+				}
+				
+				infoWin.push(new google.maps.InfoWindow());
+				var n = infoWin.length-1;
+				
+				 if(flowName != null)
+					 infoWin[n].setContent("<b>"+flowName+"</b>");
+				 else 
+					 infoWin[n].setContent("<b>"+tweetId+"</b>");
+					
+				 
+					
+				 google.maps.event.addListener(overlay,'click', function (ev) {
+						if(overlay instanceof google.maps.Marker){
+							infoWin[n].open($scope.map.control.getGMap(), overlay);							
+							return;
+						}
+						
+						infoWin[n].setPosition(ev.latLng);
+						infoWin[n].open($scope.map.control.getGMap());
+						
+				  });				 
+				
+				  overlays.push(overlay);
+				  
+					
+				i++;
+			}
+			
+			
+			mapService.addTweet(tweetId, overlays);
+			mapService.setInfowindows(tweetId, infoWin);
+			
+			
+		};
+		
+		
+			
+		/*$scope.addMarker = function($event, $params) {
+			  $scope.myMarkers.push(new google.maps.Marker({
+			    map: $scope.myMap,
+			    position: $params[0].latLng
+			  }));
+		};*/
+		
+		$scope.centerOnMe = function() {
+	        if(!$scope.map) {
+	          return;
+	        }
+	
+	        navigator.geolocation.getCurrentPosition(function(pos) {
+	        	console.log(pos);
+	        	$scope.map.control.refresh({latitude: pos.coords.latitude, longitude: pos.coords.longitude});
+	        	
+	          //$scope.loading.hide();
+	        }, function(error) {
+	          alert('Unable to get location: ' + error.message);
+	        });
+	    };
+	     
+	    $scope.centerOnMe();
+	
+	}]);
+
+
+
+
+

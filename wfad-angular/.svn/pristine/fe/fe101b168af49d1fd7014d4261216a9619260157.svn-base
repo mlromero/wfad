@@ -1,0 +1,20 @@
+<h1><code ng:non-bindable="">jqmConfig</code>
+<div><span class="hint">service in module <code ng:non-bindable="">jqm</code>
+</span>
+</div>
+</h1>
+<div><h2 id="description">Description</h2>
+<div class="description"><div class="jqm-jqmconfig-page"><p>A service used to tell the default primary and secondary theme. </p>
+</div></div>
+<div class="member property"><h2 id="properties">Properties</h2>
+<ul class="properties"><li><h3 id="properties_primarytheme">primaryTheme</h3>
+<div class="primarytheme"><div class="jqm-jqmconfig-primarytheme-page"><p>{string} The current primary theme.  See <a href="#/api/jqm.jqmConfigProvider#primarytheme">jqm.jqmConfigProvider#primaryTheme</a>.</p>
+</div></div>
+</li>
+<li><h3 id="properties_secondarytheme">secondaryTheme</h3>
+<div class="secondarytheme"><div class="jqm-jqmconfig-secondarytheme-page"><p>{string} The current secondary theme.  See <a href="#/api/jqm.jqmConfigProvider#secondarytheme">jqm.jqmConfigProvider#secondaryTheme</a>.</p>
+</div></div>
+</li>
+</ul>
+</div>
+</div>

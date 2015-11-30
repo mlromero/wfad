@@ -1,0 +1,64 @@
+<%@ page session="false"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<html>
+<head>
+
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Microblogging</title>
+<link rel="stylesheet"
+	href="resources/css/themes/default/jquery.mobile-1.4.0.min.css">
+<script src="resources/js/jquery.js"></script>
+<script src="resources/js/jquery.mobile-1.4.0.min.js"></script>
+<script src="resources/js/jquery.validate.min.js"></script>
+<script>
+	$.mobile.ignoreContentEnabled = true
+	$(function() {
+		$("#nsf").validate();
+
+	})
+</script>
+<style>
+.error {
+	color: red;
+}
+</style>
+</head>
+<body>
+	<div data-role="page" data-ajax="false">
+		<div data-role="header" data-position="fixed" data-id="header" >
+			<h1>Microblogging</h1>
+			<a href="<c:url value="/logout" />" data-icon="back" class="ui-btn-right"
+				data-iconpos="notext">Sign out</a>
+		</div>
+		<span class="error">${msg}</span>
+		<h3 class="ui-bar ui-bar-b">Create new session</h3>
+		<form action="newSession" method="post" id="nsf">
+			<label for="session" class="ui-hidden-accessible">New Session</label><input
+				name="session" placeholder="New Session" class="required" />
+
+
+			<button type="submit">Create</button>
+		</form>
+		<br/>
+		<br/>
+		<h3 class="ui-bar ui-bar-b">Your Sessions</h3>
+		<c:forEach items="${sessions}" var="session">
+			<div class="ui-corner-all custom-corners">
+				<div class="ui-bar ui-bar-a">
+					<h3>Session: ${session.name}</h3>
+				</div>
+				<div class="ui-body ui-body-a">
+				<form action="map" method="post">
+					<input type="hidden" name="session" value="${session.sessionID}">
+					<button onclick="$(this).parents('form').prop({'action':'map'})" type="submit">Enter Session</button>
+					<input type="text" name="user" placeholder="Username">
+					<button onclick="$(this).parents('form').prop({'action':'invite'})" type="submit">Invite User to Session</button>
+				</form>
+				</div>
+			</div>
+		
+		</c:forEach>
+	</div>
+</body>
+</html>

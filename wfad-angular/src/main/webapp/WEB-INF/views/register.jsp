@@ -1,0 +1,81 @@
+<%@ page session="false"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<html>
+<head>
+
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>W-adhoc</title>
+
+<link rel="stylesheet" type="text/css" href="resources/js/bootstrap/css/bootstrap.min.css"></link>
+
+
+<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.16/angular.min.js"></script>
+<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.16/angular-touch.min.js"></script> 
+<script src="resources/js/jqm-angular/angular-jqm.js" type="text/javascript"></script> 
+<script src="resources/js/ui-bootstrap/ui-bootstrap-0.11.2.js"></script>
+
+
+<script>
+$.mobile.ignoreContentEnabled =true
+$(function(){
+	$("form").validate();
+	
+})
+</script>
+<style>
+.error{
+color:red;
+}
+</style>
+</head>
+<body>
+		
+<div data-role="page" data-ajax="false">
+  <div id="login-overlay" class="modal-dialog">
+      <div class="modal-content">
+          <div class="modal-header">
+              <!-- <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button> -->
+              <h4 class="modal-title" id="myModalLabel">Welcome to W-adhoc!</h4>
+          </div>
+          <div class="modal-body">
+              <div class="row">
+                  <div class="col-xs-6">
+                      <div class="well">
+					    <form accept-charset="UTF-8" action="register" method="post">
+					    	<div class="form-group">
+                                <label for="username" class="control-label">Username</label>
+                                <input type="text" class="form-control" id="user" name="user" value="" required="true" title="Please enter you username" placeholder="username">
+                                <span class="help-block"></span>
+                            </div>
+                            <div class="form-group">
+                                <label for="password" class="control-label">Password</label>
+                                <input type="password" class="form-control" id="pass" name="pass" value="" required="true" title="Please enter your password" placeholder="password">
+                                <span class="help-block"></span>
+                            </div>
+                            <div class="form-group">
+                                <label for="gpass2" class="control-label">Password</label>
+                                <input type="password" class="form-control" id="gpass2" name="gpass2" value="" required="true" title="Please enter your password" placeholder="password again">
+                                <span class="help-block"></span>
+                            </div>
+					    
+						    <button class="btn btn-success btn-block" type="submit">Sign up for W-adhoc</button>
+					        
+					    </form>
+					</div>
+                 </div>
+                  	<div class="col-xs-6">
+                  		<p class="lead">New to W-adhoc? Sign up!</p>
+                  		<ul class="list-unstyled" style="line-height: 2">
+                      	  <li>W-adhoc is a social App that manages and help you in your workflow process</li>
+                      	</ul>                	
+                  	</div>
+              </div>
+          </div>
+      </div>
+  </div> 
+</div>
+	
+	
+</body>
+</html>

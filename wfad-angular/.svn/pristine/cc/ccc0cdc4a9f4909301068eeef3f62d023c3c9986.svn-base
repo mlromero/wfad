@@ -1,0 +1,129 @@
+function Blog(overlay,n,title,description,time,type,userId){
+	this.id=n;
+	this.title=title;
+	this.description=description;
+	this.time=time;
+	this.overlay=overlay;
+	this.type=type;
+	this.userId=userId;
+	this.media=[];
+	this.comments=[];
+	this.tags=[];
+	this.likes=0;
+	this.dislikes=0;
+	this.rateHashMap=new HashMap();
+	this.visitors=[];
+}
+
+Blog.prototype.addComment = function(id,userId,body,time){
+	var n=this.comments.length;
+	this.comments[n]=new Comment(id,body,userId,this.id,time);
+};
+
+Blog.prototype.addSubComment = function(id,userId,body,time,commentIdRef,level){
+	for(var i=0;i<this.comments.length;i++){
+		var n=this.comments[i].commentList.length;
+		if(this.comments[i].id==commentIdRef){
+			this.comments[i].commentList[n]=new Comment(id,body,userId,this.id,time,commentIdRef,level);
+			return;
+		}		
+		for(var j=0;j<n;j++){
+			if(this.comments[i].commentList[j].id==commentIdRef){
+				this.comments[i].commentList[n]=new Comment(id,body,userId,this.id,time,commentIdRef,level);
+				return;
+			}
+		}
+	}
+};
+
+Blog.prototype.average = function (){
+	var sum=0;
+	for(var i = 0; i++ < this.rateHashMap.size; this.rateHashMap.next()){
+		this.rateHashMap.hash(this.rateHashMap.key());
+		sum+=parseInt(this.rateHashMap.value());	
+	}
+	if(sum==0)
+		return sum;
+	var avg = sum/this.rateHashMap.size;
+	return avg;	    
+};
+
+Blog.prototype.detailRating = function (){
+	var result=[0,0,0,0,0,0,0];	
+	for(var i = 0; i++ < this.rateHashMap.size; this.rateHashMap.next()){
+		this.rateHashMap.hash(this.rateHashMap.key());
+		result[parseInt(this.rateHashMap.value())-1]++;	
+	}
+	return result;
+};
+
+Blog.prototype.isVisitor = function(userId){
+	for(var i=0;i<this.visitors.length;i++){
+		if(this.visitors[i]==userId)
+			return true;
+	}
+	return undefined;
+};
+Blog.prototype.getId = function(){
+	return this.id;
+};
+
+Blog.prototype.setId = function(id){
+	this.id=id;
+};
+
+Blog.prototype.getName = function(){
+	return this.name;
+};
+
+Blog.prototype.setName = function(name){
+	this.name=name;
+};
+
+Blog.prototype.getDescription = function(){
+	return this.description;
+};
+
+Blog.prototype.setDescription = function(description){
+	this.description=description;
+};
+
+Blog.prototype.getMedia = function(){
+	return this.media;
+};
+
+Blog.prototype.setMedia = function(media){
+	this.media=media;
+};
+
+Blog.prototype.getComments = function(){
+	return this.comments;
+};
+
+Blog.prototype.setComments = function(comments){
+	this.comments=comments;
+};
+
+Blog.prototype.getTags = function(){
+	return this.tags;
+};
+
+Blog.prototype.setTags = function(tags){
+	this.tags=tags;
+};
+
+Blog.prototype.getAgree = function(){
+	return this.agree;
+};
+
+Blog.prototype.setAgree = function(agree){
+	this.agree=agree;
+};
+
+Blog.prototype.getDisagree = function(){
+	return this.agree;
+};
+
+Blog.prototype.setDisagree = function(disagree){
+	this.disagree=disagree;
+};

@@ -1,0 +1,163 @@
+(function(){
+
+	var app = angular.module("workflow", ['google-maps']);
+	
+	app.service('loadGoogleMapAPI', ['$window', '$q', function ( $window, $q ) {	                                     
+        var deferred = $q.defer();
+        
+        // Load Google map API script
+        function loadScript() {  
+            // Use global document since Angular's $document is weak
+            var script = document.createElement('script');
+            script.src = '//maps.googleapis.com/maps/api/js?sensor=false&language=en&callback=initMap';
+            
+            document.body.appendChild(script);
+        }
+        
+        // Script loaded callback, send resolve
+        $window.initMap = function () {
+            deferred.resolve();
+        };
+        
+        loadScript();
+            
+        return deferred.promise;
+    }]); 
+	
+	app.controller('mapController',function($scope){		
+		 $scope.map = {
+			    center: {
+			        latitude: 30,
+			        longitude: 71
+			    },
+			    zoom: 15,
+			    control: {}
+			    
+		}; 
+		 
+		 $scope.centerOnMe = function() {
+	        if(!$scope.map) {
+	          return;
+	        }
+
+	        navigator.geolocation.getCurrentPosition(function(pos) {
+	        	console.log(pos);
+	          //$scope.map.setCenter(new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude));
+	        	$scope.map.control.refresh({latitude: pos.coords.latitude, longitude: pos.coords.longitude});
+	        	
+	          //$scope.loading.hide();
+	        }, function(error) {
+	          alert('Unable to get location: ' + error.message);
+	        });
+	     };
+	     
+	     $scope.centerOnMe();
+	
+	
+	});
+	
+	
+	
+	app.controller('appController',  function($scope) {
+		
+		
+		
+	});
+/*var app = angular.module('workflow', ['AngularGM'//, //mapa de google
+                                   /*  'mgcrea.ngStrap', 
+                                     'monospaced.elastic', //acomodar textarea a texto
+                                     'ui.bootstrap', 
+                                     'ngBusy', //boton esperar
+                                     'ui'
+                                
+                                     ]); */
+
+
+
+
+app.controller('tweetController', function($scope){
+	
+	//Dropdown plugin data
+	$scope.ddData = [
+	    {
+	        text: "Start process",
+	        value: 4,
+	        selected: false,
+	        description: "#",
+	        imageSrc: "resources/images/patterns/start.png"
+	    },
+	    {
+	        text: "Parallel split",
+	        value: 2,
+	        selected: false,
+	        description: "%2",
+	        imageSrc: "resources/images/patterns/flow-split.png"
+	    },
+	    {
+	        text: "Syncronization a",
+	        value: 3,
+	        selected: false,
+	        description: "%3a",
+	        imageSrc: "resources/images/patterns/flow-merge.png"
+	    },
+	    {
+	        text: "Syncronization b",
+	        value: 5,
+	        selected: false,
+	        description: "%3b",
+	        imageSrc: "resources/images/patterns/flow-merge.png"
+	    },
+	    {
+	        text: "Sequence",
+	        value: 1,
+	        selected: false,
+	        description: "%1",
+	        imageSrc: "resources/images/patterns/flow-sequence.png"
+	    },
+	    {
+	        text: "Implicit termination",
+	        value: 0,
+	        selected: false,
+	        description: "%11",
+	        imageSrc: "resources/images/patterns/finish.png"
+	    }	    
+	];
+	
+	//Object {text: "Start process", value: 4, selected: false, description: "#", imageSrc: "resources/images/patterns/start.png"} 
+	$scope.selectedData = {}; 
+	
+	$scope.tweet = {};
+	
+	$scope.addTweet = function(){
+		console.log($scope.tweet);
+		$scope.tweet.txt = "#processName";
+	};
+	
+	
+	
+	angular.element(document).ready(function () {
+		$('#myDropdown').ddslick({
+		    data: $scope.ddData,
+		    width:40,
+		    selectText: "",
+		    imagePosition:"left",
+		    onSelected: function(selectedData){
+		        //callback function: do something with selectedData;
+		    	
+		    	$scope.selectedData = selectedData.selectedData;
+		    	$scope.tweet.pattern = $scope.selectedData.value;
+		    	console.log($scope.selectedData);
+		    	console.log($scope.tweet);
+	    			        
+		    }   
+		});	
+	});
+	
+	
+});
+
+
+
+
+
+})();

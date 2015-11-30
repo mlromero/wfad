@@ -1,0 +1,59 @@
+function Comment(id,body,userId,blogId,time,commentIdRef,level){
+	if(commentIdRef==undefined)
+		this._comment(id,body,userId,blogId,time);
+	else
+		this._subcomment(id,body,userId,blogId,time,commentIdRef,level);
+}
+Comment.prototype._comment=function(id,body,userId,blogId,time){
+	this.id=id;
+	this.userId=userId;
+	this.blogId=blogId;
+	this.body=body;
+	this.time=time;
+	this.commentIdRef=this.id;
+	this.level=0;
+	this.commentList=[];
+};
+Comment.prototype._subcomment=function(id,body,userId,blogId,time,commentIdRef,level){
+	this.id=id;
+	this.userId=userId;
+	this.blogId=blogId;
+	this.body=body;
+	this.time=time;
+	this.commentIdRef=commentIdRef;
+	this.level=parseInt(level);
+	this.commentList=[];
+};
+
+Comment.prototype.getId = function(){
+	return this.id;
+};
+
+Comment.prototype.setId = function(id){
+	this.id=id;
+};
+
+Comment.prototype.getUserId = function(){
+	return this.userId;
+};
+
+Comment.prototype.setUserId = function(userId){
+	this.userId=userId;
+};
+
+Comment.prototype.getBlogId = function(){
+	return this.blogId;
+};
+
+Comment.prototype.setBlogId = function(blogId){
+	this.blogId=blogId;	
+};
+
+Comment.prototype.getBody = function(){
+	return this.body;
+};
+
+Comment.prototype.setBody = function(body){
+	this.body=body;
+};
+

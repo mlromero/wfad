@@ -1,0 +1,42 @@
+package cl.uchile.workflow.persistance;
+
+import java.util.List;
+
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
+
+import org.hibernate.Hibernate;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
+
+import cl.uchile.workflow.persistance.model.Process;
+import cl.uchile.workflow.persistance.model.User;
+
+@Repository
+public class ProcessDAO {
+	@PersistenceContext
+	private EntityManager em;
+
+	@Transactional
+	public String getProcessOwner(String processName){
+		TypedQuery<String> q = em.createQuery("SELECT owner FROM Process WHERE processId = : processName", String.class);
+		q.setParameter("processName", processName);		
+		return q.getSingleResult();		
+	}
+	
+	@Transactional
+	public Process getProcessByName(String name){
+		
+		TypedQuery<Process> q = em.createQuery("FROM Process WHERE processId=:name", Process.class);
+		q.setParameter("name", name);
+		return q.getSingleResult();
+			
+	}
+	
+	public void update(Process p){
+		this.em.merge(p);
+	}
+	
+	
+}

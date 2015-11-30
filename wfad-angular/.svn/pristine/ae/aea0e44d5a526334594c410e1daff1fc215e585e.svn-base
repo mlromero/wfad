@@ -1,0 +1,11 @@
+jdbc.driverClassName=org.hsqldb.jdbcDriver
+jdbc.url=jdbc:hsqldb:file:/home/2010/sgamboa/data/workflow;shutdown=true
+jdbc.username=SA
+jdbc.password=
+hibernate.dialect=org.hibernate.dialect.HSQLDialec
+
+jpa.database = HSQL
+hibernate.generate_statistics = true
+hibernate.show_sql = true
+jpa.showSql = true
+jpa.generateDdl = true

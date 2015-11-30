@@ -1,0 +1,31 @@
+<h1><code ng:non-bindable="">jqmFooter</code>
+<div><span class="hint">directive in module <code ng:non-bindable="">jqm</code>
+</span>
+</div>
+</h1>
+<div><h2 id="description">Description</h2>
+<div class="description"><div class="jqm-directive-page jqm-directive-jqmfooter-page"><p>Defines the footer of a <code>jqm-page</code>. For a persistent footer, put the footer directly below <code>jqmView</code> / <code>jqmCachingView</code>.</p>
+</div></div>
+<h2 id="usage">Usage</h2>
+<div class="usage">as attribute<pre class="prettyprint linenums">&lt;ANY jqm-footer&gt;
+   ...
+&lt;/ANY&gt;</pre>
+</div>
+<h2 id="example">Example</h2>
+<div class="example"><div class="jqm-directive-page jqm-directive-jqmfooter-page"><h4 id="example_source">Source</h4>
+<div source-edit="jqm" source-edit-deps="angular.js" source-edit-html="index.html-4" source-edit-css="" source-edit-js="" source-edit-json="" source-edit-unit="" source-edit-scenario=""></div>
+<div class="tabbable"><div class="tab-pane" title="index.html">
+<pre class="prettyprint linenums" ng-set-text="index.html-4" ng-html-wrap-loaded="jqm angular.js"></pre>
+<script type="text/ng-template" id="index.html-4">
+<div jqm-page class="jqm-standalone-page" style="height: 100px;">
+  Hello world!
+  <div jqm-footer>
+  <h3 id="example_footer-of-page1">Footer of Page1</h3>
+  </div>
+</div>
+</script>
+</div>
+</div><h4 id="example_footer-of-page1_demo">Demo</h4>
+<div class="well doc-example-live animate-container" ng-embed-app="jqm" ng-set-html="index.html-4" ng-eval-javascript=""></div>
+</div></div>
+</div>

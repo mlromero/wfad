@@ -1,0 +1,53 @@
+<h1><code ng:non-bindable="">jqmListview</code>
+<div><span class="hint">directive in module <code ng:non-bindable="">jqm</code>
+</span>
+</div>
+</h1>
+<div><h2 id="description">Description</h2>
+<div class="description"><div class="jqm-directive-page jqm-directive-jqmlistview-page"><p>Creates a jQuery mobile listview.  Add jqmLiDivider, jqmLiEntry, and/or jqmLiLinks inside.</p>
+</div></div>
+<h2 id="usage">Usage</h2>
+<div class="usage">as attribute<pre class="prettyprint linenums">&lt;ANY jqm-listview
+     [inset="{string}"]
+     [shadow="{string}"]
+     [shadow="{string}"]&gt;
+   ...
+&lt;/ANY&gt;</pre>
+<h4 id="usage_parameters">Parameters</h4><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>inset <div><em>(optional)</em></div></td><td><a href="" class="label type-hint type-hint-string">string</a></td><td><div class="jqm-directive-page jqm-directive-jqmlistview-page"><p>Whether this listview should be inset or not. Default false.</p>
+</div></td></tr><tr><td>shadow <div><em>(optional)</em></div></td><td><a href="" class="label type-hint type-hint-string">string</a></td><td><div class="jqm-directive-page jqm-directive-jqmlistview-page"><p>Whether this listview should have a shadow or not (only applies if inset). Default true.</p>
+</div></td></tr><tr><td>shadow <div><em>(optional)</em></div></td><td><a href="" class="label type-hint type-hint-string">string</a></td><td><div class="jqm-directive-page jqm-directive-jqmlistview-page"><p>Whether this listview should have corners or not (only applies if inset). Default true.</p>
+</div></td></tr></tbody></table></div>
+<h2 id="example">Example</h2>
+<div class="example"><div class="jqm-directive-page jqm-directive-jqmlistview-page"><h4 id="example_source">Source</h4>
+<div source-edit="jqm" source-edit-deps="angular.js" source-edit-html="index.html-6" source-edit-css="" source-edit-js="" source-edit-json="" source-edit-unit="" source-edit-scenario=""></div>
+<div class="tabbable"><div class="tab-pane" title="index.html">
+<pre class="prettyprint linenums" ng-set-text="index.html-6" ng-html-wrap-loaded="jqm angular.js"></pre>
+<script type="text/ng-template" id="index.html-6">
+<div ng-init="list=[1,2,3,4,5,6]"></div>
+<h5 id="example_source_entries">Entries</h5>
+<ul jqm-listview>
+  <li jqm-li-entry>Hello, entry!</li>
+  <li jqm-li-entry>Another entry!</li>
+  <li jqm-li-entry>More!! entry!</li>
+  <li jqm-li-divider jqm-theme="b">Divider</li>
+  <li jqm-li-entry>Hello, entry!</li>
+  <li jqm-li-entry>Another entry!</li>
+  <li jqm-li-entry>More!! entry!</li>
+</ul>
+<h5 id="example_source_links">Links</h5>
+<ul jqm-listview>
+  <li ng-repeat="i in list" jqm-li-link="#/{{i}}">{{i}}</li>
+  <li jqm-li-divider jqm-theme="b">Here's a thumbnail with a count</li>
+  <li jqm-li-link icon="ui-icon-home">
+  <img jqm-li-thumb src="http://placekitten.com/80/80">
+  <h4 class="ui-li-heading" id="example_kitten">Kitten!</h4>
+  <p class="ui-li-desc">Subtext here. Yeah.</p>
+  <span jqm-li-count>44</span>
+  </li>
+</ul>
+</script>
+</div>
+</div><h4 id="example_demo">Demo</h4>
+<div class="well doc-example-live animate-container" ng-embed-app="jqm" ng-set-html="index.html-6" ng-eval-javascript=""></div>
+</div></div>
+</div>

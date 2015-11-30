@@ -1,0 +1,22 @@
+package cl.uchile.workflow.persistance;
+
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
+
+import cl.uchile.workflow.persistance.model.File;
+
+@Repository
+public class FileDAO {
+	@PersistenceContext
+	private EntityManager em;
+	@Transactional
+	public void save(File file) {
+		em.persist(file);
+	}
+	public File byId(Long id) {
+		return em.find(File.class, id);
+	}
+}

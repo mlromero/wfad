@@ -1,0 +1,26 @@
+.angular-google-map-container {
+	width: 100%;
+  	height: 100%;	
+}
+
+
+
+ textarea {
+    padding: 3px;
+    width: 800px;
+   
+}
+
+ myDropdown {
+	height: 100px;
+}
+
+.navy {
+	border-top-width: 10px;
+    margin-bottom: 5px;
+}
+
+.dd-selected-image {	
+    height: 40px;	
+}
+

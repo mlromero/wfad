@@ -1,0 +1,23 @@
+Mis notas:
+
+- Configuracion de spring:
+http://www.journaldev.com/2552/spring-restful-web-service-example-with-json-jackson-and-client-program
+
+- Angular bootstrap: http://angular-ui.github.io/bootstrap/#/tooltip
+
+- typeahead con @ y # : http://jeff-collins.github.io/ment.io/#/examples
+* https://github.com/jeff-collins/ment.io/blob/master/ment.io/index.html
+* https://github.com/jeff-collins/ment.io/blob/master/ment.io/scripts.js
+
+- Ejemplo de validaciones custom:
+http://plnkr.co/edit/4u8FV869aD33WozdqdQ2?p=preview
+
+Cosas que faltan
+
+1. poner load cuando carga app
+2. que solo aparezca crear proceso cuando se ingresa: OK
+3. controlar limites de mapa cuando se muestran figuras
+4. controlar barras laterales.
+5. Recargar pagina cuando se entra a un nuevo proceso: OK
+6. Que solo usuario owner pueda finalizar proceso 
+

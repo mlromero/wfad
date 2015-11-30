@@ -1,0 +1,105 @@
+<h1><code ng:non-bindable="">jqmCachingView</code>
+<div><span class="hint">directive in module <code ng:non-bindable="">jqm</code>
+</span>
+</div>
+</h1>
+<div><h2 id="description">Description</h2>
+<div class="description"><div class="jqm-directive-page jqm-directive-jqmcachingview-page"><h3 id="description_overview">Overview</h3>
+<p><code>jqmCachingView</code> extends <code>jqmView</code> in the following way:</p>
+<ul>
+<li>views are only compiled once and then stored in the <code>jqmViewCache</code>. By this, changes between views are very fast.</li>
+<li>controllers are still instantiated on every route change. Their changes to the scope get cleared
+when the view is left.</li>
+</ul>
+<p>Side effects:
+- For animations between multiple routes that use the same template add the attribute <code>allow-same-view-animation</code>
+  to the root of your view. Background: The DOM nodes and scope of the compiled template are reused for every view.
+  With this attribute <code>jqmCachingView</code> will create two instances of the template internally.
+  Example: Click on Moby and directly after this on Gatsby. Both routes use the same template and therefore
+  the template has to contain <code>allow-same-view-animation</code>.</p>
+</div></div>
+<h2 id="dependencies">Dependencies</h2>
+<ul class="dependencies"><li><code ng:non-bindable=""><a href="#/api/jqmViewCache">jqmViewCache</a></code>
+</li>
+</ul>
+<h2 id="usage">Usage</h2>
+<div class="usage">as element:<pre class="prettyprint linenums">&lt;jqm-caching-view
+       [jqm-caching-view="{expression}"]&gt;
+&lt;/jqm-caching-view&gt;</pre>
+as attribute<pre class="prettyprint linenums">&lt;ANY jqm-caching-view="{expression}"&gt;
+   ...
+&lt;/ANY&gt;</pre>
+as class<pre class="prettyprint linenums">&lt;ANY class="jqm-caching-view: {expression};"&gt;
+   ...
+&lt;/ANY&gt;</pre>
+<h3 id="usage_directive-info">Directive info</h3>
+<div class="directive-info"><ul><li>This directive creates new scope.</li>
+</ul>
+</div>
+<h4 id="usage_directive-info_parameters">Parameters</h4><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>jqmCachingView <div><em>(optional)</em></div></td><td><a href="" class="label type-hint type-hint-expression">expression</a></td><td><div class="jqm-directive-page jqm-directive-jqmcachingview-page"><p>angular expression evaluating to a route (optional). See <code>jqmView</code> for details.</p>
+</div></td></tr></tbody></table></div>
+<h2 id="example">Example</h2>
+<div class="example"><div class="jqm-directive-page jqm-directive-jqmcachingview-page"><h4 id="example_source">Source</h4>
+<div source-edit="jqmView" source-edit-deps="angular.js script.js" source-edit-html="index.html-0 book.html chapter.html" source-edit-css="" source-edit-js="script.js" source-edit-json="" source-edit-unit="" source-edit-scenario=""></div>
+<div class="tabbable"><div class="tab-pane" title="index.html">
+<pre class="prettyprint linenums" ng-set-text="index.html-0" ng-html-wrap-loaded="jqmView angular.js script.js"></pre>
+<script type="text/ng-template" id="index.html-0">
+  Choose:
+  <a href="#/Book/Moby">Moby</a> |
+  <a href="#/Book/Moby/ch/1">Moby: Ch1</a> |
+  <a href="#/Book/Gatsby">Gatsby</a> |
+  <a href="#/Book/Gatsby/ch/4?key=value">Gatsby: Ch4</a> |
+  <a href="#/Book/Scarlet">Scarlet Letter</a><br/>
+
+  <div jqm-caching-view style="height:300px"></div>
+</script>
+</div>
+<div class="tab-pane" title="book.html">
+<pre class="prettyprint linenums" ng-set-text="book.html"></pre>
+<script type="text/ng-template" id="book.html">
+<div jqm-page allow-same-view-animation>
+  <div jqm-header><h3 id="example_book-{{bookparamsbookid}}">Book {{book.params.bookId}}</h3></div>
+  The book contains ...
+</div>
+</script>
+</div>
+<div class="tab-pane" title="chapter.html">
+<pre class="prettyprint linenums" ng-set-text="chapter.html"></pre>
+<script type="text/ng-template" id="chapter.html">
+<div jqm-page allow-same-view-animation>
+  <div jqm-header><h3 id="example_chapter-{{chapterparamschapterid}}-of-{{chapterparamsbookid}}">Chapter {{chapter.params.chapterId}} of {{chapter.params.bookId}}</h3></div>
+  This chapter contains ...
+</div>
+</script>
+</div>
+<div class="tab-pane" title="script.js">
+<pre class="prettyprint linenums" ng-set-text="script.js"></pre>
+<script type="text/ng-template" id="script.js">
+angular.module('jqmView', ['jqm'], function($routeProvider) {
+  $routeProvider.when('/Book/:bookId', {
+  templateUrl: 'book.html',
+  controller: BookCntl,
+  controllerAs: 'book',
+  animation: 'page-slide'
+  });
+  $routeProvider.when('/Book/:bookId/ch/:chapterId', {
+  templateUrl: 'chapter.html',
+  controller: ChapterCntl,
+  controllerAs: 'chapter',
+  animation: 'page-slide'
+  });
+});
+
+function BookCntl($routeParams) {
+  this.params = $routeParams;
+}
+
+function ChapterCntl($routeParams) {
+  this.params = $routeParams;
+}
+</script>
+</div>
+</div><h4 id="example_chapter-{{chapterparamschapterid}}-of-{{chapterparamsbookid}}_demo">Demo</h4>
+<div class="well doc-example-live animate-container" ng-embed-app="jqmView" ng-set-html="index.html-0" ng-eval-javascript="script.js"></div>
+</div></div>
+</div>

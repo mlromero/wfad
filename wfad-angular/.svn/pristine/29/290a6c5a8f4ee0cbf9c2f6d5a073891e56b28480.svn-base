@@ -1,0 +1,8 @@
+<h1><code ng:non-bindable=""></code>
+<div><span class="hint"></span>
+</div>
+</h1>
+<div><div class="api-documentation-page"><p>Hello, this is angular-jqm!</p>
+<p>This is the API documentation with live examples.</p>
+<p>To get started, check out the <a href="#/guide">guide</a>.</p>
+</div></div>

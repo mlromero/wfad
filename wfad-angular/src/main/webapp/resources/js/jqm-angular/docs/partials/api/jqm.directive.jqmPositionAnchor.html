@@ -1,0 +1,31 @@
+<h1><code ng:non-bindable="">jqmPositionAnchor</code>
+<div><span class="hint">directive in module <code ng:non-bindable="">jqm</code>
+</span>
+</div>
+</h1>
+<div><h2 id="description">Description</h2>
+<div class="description"><div class="jqm-directive-page jqm-directive-jqmpositionanchor-page"><p>For every child element that has an own scope this will set the property $position in the child&#39;s scope
+and keep that value updated whenever elements are added, moved or removed from the element.</p>
+</div></div>
+<h2 id="usage">Usage</h2>
+<div class="usage">as attribute<pre class="prettyprint linenums">&lt;ANY jqm-position-anchor&gt;
+   ...
+&lt;/ANY&gt;</pre>
+</div>
+<h2 id="example">Example</h2>
+<div class="example"><div class="jqm-directive-page jqm-directive-jqmpositionanchor-page"><h4 id="example_source">Source</h4>
+<div source-edit="jqm" source-edit-deps="angular.js" source-edit-html="index.html-10" source-edit-css="" source-edit-js="" source-edit-json="" source-edit-unit="" source-edit-scenario=""></div>
+<div class="tabbable"><div class="tab-pane" title="index.html">
+<pre class="prettyprint linenums" ng-set-text="index.html-10" ng-html-wrap-loaded="jqm angular.js"></pre>
+<script type="text/ng-template" id="index.html-10">
+<div jqm-position-anchor>
+  <div ng-controller="angular.noop">First child: {{$position}}</div>
+  <div ng-controller="angular.noop">Middle child: {{$position}}</div>
+  <div ng-controller="angular.noop">Last child: {{$position}}</div>
+</div>
+</script>
+</div>
+</div><h4 id="example_demo">Demo</h4>
+<div class="well doc-example-live animate-container" ng-embed-app="jqm" ng-set-html="index.html-10" ng-eval-javascript=""></div>
+</div></div>
+</div>

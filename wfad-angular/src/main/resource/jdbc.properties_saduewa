@@ -1,0 +1,12 @@
+jdbc.driverClassName=org.postgresql.Driver
+jdbc.url=jdbc:postgresql://localhost/workflow
+jdbc.username=workflow
+jdbc.password=bahB1eighohnaiw1vie2kieThahsij
+
+hibernate.dialect=org.hibernate.dialect.PostgreSQLDialec
+
+jpa.database = POSTGRESQL
+hibernate.generate_statistics = true
+hibernate.show_sql = true
+jpa.showSql = true
+jpa.generateDdl = true

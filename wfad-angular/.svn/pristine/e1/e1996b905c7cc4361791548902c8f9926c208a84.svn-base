@@ -1,0 +1,43 @@
+<html>
+<head>
+<title>Upload a file please</title>
+<script src="resources/js/jquery.js"></script>
+<script>
+	function ajax() {
+		var data = new FormData($("form")[0]);
+	/* 	var files=[];
+		$('.f').each( function() {
+			alert(this);
+			jQuery.each(this.files, function(i, file) {
+				files.push(file);
+				alert(file);
+			});
+		});
+		data.append("files[]",files); */
+		console.log(data);
+		$.ajax({
+		    url: 'upload',
+		    data: data,
+		    cache: false,
+		    contentType: false,
+		    processData: false,
+		    type: 'POST',
+		    success: function(data){
+		        alert(data);
+		    }
+		});
+
+	}
+</script>
+</head>
+<body>
+	<h1>Please upload a file</h1>
+	<p>${msg}</p>
+	<form method="post" action="upload" enctype="multipart/form-data">
+		<input class="f" type="file" name="files[]" /><br /> <input class="f"
+			type="file" name="files[]" /> <input type="submit" />
+	</form>
+	<button type="button" onclick="ajax()">Ajax</button>
+</body>
+
+</html>

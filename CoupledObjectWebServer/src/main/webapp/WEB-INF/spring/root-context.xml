@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:task="http://www.springframework.org/schema/task"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+         http://www.springframework.org/schema/beans/spring-beans.xsd
+         http://www.springframework.org/schema/aop
+         http://www.springframework.org/schema/aop/spring-aop.xsd
+         http://www.springframework.org/schema/context
+         http://www.springframework.org/schema/context/spring-context.xsd
+          http://www.springframework.org/schema/tx
+            http://www.springframework.org/schema/tx/spring-tx-3.1.xsd
+            http://www.springframework.org/schema/task 
+            http://www.springframework.org/schema/task/spring-task.xsd">
+	<context:annotation-config />
+	<import resource="classpath:persistence-context.xml" />
+	<!-- Root Context: defines shared resources visible to all other web components -->
+
+	<bean id="clientIdGenerator" class="cl.uchile.cos.util.BasicIdGenerator"
+		scope="singleton">
+	</bean>
+	<bean id="userIdGenerator" class="cl.uchile.cos.util.BasicIdGenerator"
+		scope="singleton">
+	</bean>
+	<bean id="sessionIdGenerator" class="cl.uchile.cos.util.BasicIdGenerator"
+		scope="singleton">
+	</bean>
+	<bean id="sessionManager" class="cl.uchile.coupling.access.GenericSessionManager"
+		autowire="byName">
+
+		<constructor-arg index="0" name="destroySessionIfEmpty"
+			type="java.lang.Boolean" value="false">
+		</constructor-arg>
+
+
+	</bean>
+	
+
+
+
+
+<!-- 
+	<bean id="stateManager"
+		class="cl.uchile.cos.persistance.BasicEventStateManager"
+		scope="prototype">
+	<constructor-arg ref="serializer"></constructor-arg>
+	<constructor-arg type="java.lang.Integer" value="30"></constructor-arg>
+	<constructor-arg type="java.lang.String" value="c:/cos">
+	</constructor-arg>
+	</bean>
+	<bean id="serializer" name="serializer"
+		class="cl.uchile.coupling.resources.JSONKryoSerializer"
+		scope="prototype">
+	</bean>
+ -->
+	<bean id="couplingManager"
+		class="cl.uchile.cos.sync.CouplingManagerImpl" scope="prototype"
+		autowire="byName">
+
+	<constructor-arg type="java.util.concurrent.Executor"
+		ref="executor">
+	</constructor-arg>
+	</bean>
+
+	<bean id="messageFactory" name="messageFactory"
+		class="cl.uchile.coupling.resources.MessageFactory" scope="singleton">
+	</bean>
+	<!-- <bean id="serverAdapter" name="serverAdapter"
+		class="cl.uchile.coupling.messaging.JSONBufferAdapter" scope="prototype">
+		<property name="client" ref="client"></property>
+		<property name="sessionManager" ref="sessionManager"></property>
+		<property name="messageFactory" ref="messageFactory"></property>
+	</bean> -->
+	<task:executor id="executor" pool-size="5-10"
+		queue-capacity="100" rejection-policy="CALLER_RUNS" />
+
+
+	<bean id="usarData" class="cl.uchile.coupling.access.UserDataImpl"
+		scope="session">
+		<aop:scoped-proxy proxy-target-class="false"/>
+		<constructor-arg ref="userIdGenerator"
+			type="cl.uchile.cos.util.IdGenerator">
+		</constructor-arg>
+	</bean>
+	
+</beans>

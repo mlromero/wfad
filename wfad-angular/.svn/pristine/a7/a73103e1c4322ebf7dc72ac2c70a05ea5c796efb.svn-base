@@ -1,0 +1,43 @@
+<%@ page session="false"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<html>
+<head>
+
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Microblogging</title>
+<link rel="stylesheet"
+	href="resources/css/themes/default/jquery.mobile-1.4.0.min.css">
+<script src="resources/js/jquery.js"></script>
+<script src="resources/js/jquery.mobile-1.4.0.min.js"></script>
+<script src="resources/js/jquery.validate.min.js"></script>
+<script>
+$.mobile.ignoreContentEnabled =true
+$(function(){
+	$("form").validate();
+	
+})
+</script>
+<style>
+.error{
+color:red;
+}
+</style>
+</head>
+<body>
+	<div data-role="page" data-ajax="false">
+	<div data-role="header" data-position="fixed" data-id="header">
+	<h1>Microblogging</h1>
+	</div>
+		<span class="error">${msg}</span>
+		<p>This is a Geo-Collaborative application based in Google Maps.</p>
+		<form action="login" method="post">
+			<label for="user" class="ui-hidden-accessible">User</label><input name="user" placeholder="User" class="required"/>
+			<label for="pass" class="ui-hidden-accessible">Password</label><input type="password" name="pass" class="required" placeholder="Password"/>
+		
+		<button type="submit"  >Login</button>
+		<a href="register" data-role="button">Register</a>
+		</form>
+	</div>
+</body>
+</html>

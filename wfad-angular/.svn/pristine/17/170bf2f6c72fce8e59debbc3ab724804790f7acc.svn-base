@@ -1,0 +1,257 @@
+var drawingManager=new google.maps.drawing.DrawingManager();
+var watchId=null;
+var opStrView=false;
+function initialize() {
+          var mapOptions = {
+            zoom: 15,
+            mapTypeId: google.maps.MapTypeId.ROADMAP,
+            mapTypeControl: true,
+            mapTypeControlOptions: {
+                style: google.maps.MapTypeControlStyle.HORIZONTAL_BAR,
+                position: google.maps.ControlPosition.BOTTOM_CENTER
+            },  
+            streetViewControl: true,
+            streetViewControlOptions: {
+                position: google.maps.ControlPosition.LEFT_CENTER
+            },
+            zoomControl: true,
+            zoomControlOptions: {
+                style: google.maps.ZoomControlStyle.LARGE,
+                position: google.maps.ControlPosition.LEFT_CENTER
+            },
+            scaleControl: true,
+            scaleControlOptions: {
+                position: google.maps.ControlPosition.TOP_LEFT
+            },
+            panControl: false      
+          };
+          map = new google.maps.Map(document.getElementById('map_canvas'),
+              mapOptions);
+          google.maps.event.addListener(map, 'click', function() {
+        	  var overlay=$("#blogId").val();
+        	  if($("#add-form").hasClass("ui-panel-open") && 
+        			  (overlay!='circle' && overlay!='rectangle' && overlay!='polyline' && overlay!='polygon' && overlay!='marker')){
+        		  $("#panelD").click();
+            	  app.currentRoom.infowindow.close();
+        	  }
+          });
+          var panorama=map.getStreetView();
+          google.maps.event.addListener(panorama, 'visible_changed', function() {
+        	  if(panorama.getVisible()==true){
+        		  $("#logout").hide();
+        		  if($("#add-form").hasClass("ui-panel-open")){
+	        		  $("#panelD").click();
+	        		  opStrView=true;
+        		  }        		 
+        	  }else{
+        		  $("#logout").show();
+        		  if(opStrView==true){
+	        		  $("#panelD").click();
+	        		  opStrView=false;
+        		  }
+        	  }        	  
+          });
+          /*----------------------DRAWING LIBRARY----------------*/
+          drawingManager = new google.maps.drawing.DrawingManager({
+        	    drawingControl: true,
+        	    drawingControlOptions: {
+        	      position: google.maps.ControlPosition.TOP_CENTER,
+        	      drawingModes: [
+        	        google.maps.drawing.OverlayType.MARKER,
+        	        google.maps.drawing.OverlayType.CIRCLE,
+        	        google.maps.drawing.OverlayType.POLYGON,
+        	        google.maps.drawing.OverlayType.POLYLINE,
+        	        google.maps.drawing.OverlayType.RECTANGLE
+        	      ]
+        	    },
+        	    markerOptions: {
+        	        icon: 'http://maps.google.com/intl/en_us/mapfiles/ms/micons/blue-dot.png',
+        	        draggable: true,
+        	        clickable: true,
+        	        zIndex: 1
+        	      },
+        	    circleOptions: {
+	        	      fillColor: '#000000',
+	        	      fillOpacity: 0.2,
+	        	      strokeColor: '#5882FA',
+	        	      strokeWeight: 2,
+	        	      clickable: true,
+	        	      editable: true,
+	        	      draggable: true,
+	        	      zIndex: 1
+        	    },
+         	    polygonOptions: {
+            	      fillColor: '#000000',
+            	      fillOpacity: 0.2,
+            	      strokeColor: '#5882FA',
+            	      strokeWeight: 2,
+            	      clickable: true,
+            	      editable: true,
+            	      draggable: true,
+            	      zIndex: 1
+            	},
+        	    polylineOptions: {        	    	
+        	    	strokeColor: '#5882FA',
+            	    strokeWeight: 2,
+            	    clickable: true,
+            	    editable: true,
+            	    draggable: true,
+            	    zIndex: 1
+            	},
+        	    rectangleOptions: {
+          	      fillColor: '#000000',
+          	      fillOpacity: 0.2,
+          	      strokeColor: '#5882FA',
+          	      strokeWeight: 2,
+          	      clickable: true,
+          	      editable: true,
+          	      draggable: true,
+          	      zIndex: 1
+          	    }
+        	  });
+          drawingManager.setMap(map);
+          google.maps.event.addListener(drawingManager, 'overlaycomplete', function(event) {
+        	  if (event.type == google.maps.drawing.OverlayType.CIRCLE) {
+        		  app.currentRoom.addBlogCircle(event.overlay);
+        	  }else if(event.type == google.maps.drawing.OverlayType.RECTANGLE){
+        		  app.currentRoom.addBlogRectangle(event.overlay);
+        	  }else if(event.type == google.maps.drawing.OverlayType.POLYLINE){
+        		  app.currentRoom.addBlogPolyline(event.overlay);
+        	  }else if(event.type == google.maps.drawing.OverlayType.POLYGON){
+        		  app.currentRoom.addBlogPolygon(event.overlay);
+        	  }else if(event.type == google.maps.drawing.OverlayType.MARKER){
+        		  app.currentRoom.addBlog(event.overlay);
+        	  }
+        	  drawingManager.setDrawingMode(null);
+        	  drawingManager.setOptions({
+        	      drawingControl: false
+        	    });
+        	});
+          
+          /*----------------------PLACES LIBRARY----------------*/
+          var input = (document.getElementById('search-1'));
+          var autocomplete = new google.maps.places.Autocomplete(input);
+
+          autocomplete.bindTo('bounds', map);
+
+          var infowindow = new google.maps.InfoWindow();
+          var marker = new google.maps.Marker({
+            map: map
+          });
+          google.maps.event.addListener(autocomplete, 'place_changed', function() {
+      	    infowindow.close();
+      	    marker.setVisible(false);
+      	    var place = autocomplete.getPlace();
+      	    if (!place.geometry) {
+      	      // Inform the user that the place was not found and return.
+      	      //input.className = 'notfound';
+      	      return;
+      	    }
+
+      	    // If the place has a geometry, then present it on a map.
+      	    if (place.geometry.viewport) {
+      	      map.fitBounds(place.geometry.viewport);
+      	    } else {
+      	      map.setCenter(place.geometry.location);
+      	      map.setZoom(17);  // Why 17? Because it looks good.
+      	    }
+      	    marker.setIcon(/** @type {google.maps.Icon} */({
+      	      url: place.icon,
+      	      size: new google.maps.Size(71, 71),
+      	      origin: new google.maps.Point(0, 0),
+      	      anchor: new google.maps.Point(17, 34),
+      	      scaledSize: new google.maps.Size(35, 35)
+      	    }));
+      	    marker.setPosition(place.geometry.location);
+      	    marker.setVisible(true);
+
+      	    var address = '';
+      	    if (place.address_components) {
+      	      address = [
+      	        (place.address_components[0] && place.address_components[0].short_name || ''),
+      	        (place.address_components[1] && place.address_components[1].short_name || ''),
+      	        (place.address_components[2] && place.address_components[2].short_name || '')
+      	      ].join(' ');
+      	    }
+
+      	    infowindow.setContent('<div><strong>' + place.name + '</strong><br>' + address);
+      	    infowindow.open(map, marker);
+      	  });            
+          app.currentRoom.map=map;
+          setMyPosition();
+}
+function handleGeolocation(position){
+	var pos = new google.maps.LatLng(position.coords.latitude,
+            position.coords.longitude);
+	if(app.user.myLocation==null){
+	 app.user.myLocation = new google.maps.Marker({
+		 clickable: false,
+		 position: pos,
+		 icon: new google.maps.MarkerImage('//maps.gstatic.com/mapfiles/mobile/mobileimgs2.png',
+                                         new google.maps.Size(22,22),
+                                         new google.maps.Point(0,18),
+                                         new google.maps.Point(11,11)),
+                                         shadow: null,
+                                         zIndex: 999,
+                                         map: app.currentRoom.map 
+	 	});
+	 app.currentRoom.map.setCenter(app.user.myLocation.getPosition());
+	}
+	else
+		app.user.myLocation.setPosition(pos);	
+}
+
+function errorHandler(err) {
+	  if(err.code == 1) {
+	    alert("Error: Microbloggin doesn't have authorization to use your location. Please check it!");
+	  }else if( err.code == 2) {
+	    alert("Error: Position is unavailable!");
+	  }
+	  handleNoGeolocation();
+}
+
+function handleNoGeolocation() {
+	if(app.user.myLocation==null)
+		app.currentRoom.map.setCenter(new google.maps.LatLng(-33.458, -70.662));
+}
+
+function listenerMarker(){
+        google.maps.event.addListenerOnce(app.currentRoom.map, 'click', function(event) {
+                app.currentRoom.addBlog(event.latLng.lb,event.latLng.mb);
+        });
+}
+
+function setMyPosition(){
+	var options = {	enableHighAccuracy: true, 
+			  		maximumAge: 30000, 
+			  		timeout: 5000};
+	if(navigator.geolocation)
+		watchId=navigator.geolocation.watchPosition(handleGeolocation, 
+				errorHandler,
+				options);	
+    else
+    	handleNoGeolocation();             
+}
+
+function drawingControl(bool){
+	drawingManager.setOptions({
+	      drawingControl: bool
+	    });	
+}
+function publishPosition(user,lat,lng){
+	var pos = new google.maps.LatLng(lat,lng);
+	if(user.myLocation==null){
+		var marker = new google.maps.Marker({
+			position: pos,
+			icon: 'resources/images/group-2.png',
+			map: app.currentRoom.map
+		});
+		google.maps.event.addListener(marker,'click', function () {
+			user.infowindow.setContent(user.name);
+			user.infowindow.open(app.currentRoom.map,marker);
+		});
+		user.myLocation=marker;
+	}else{
+		user.myLocation.setPosition(pos);
+	}	
+}

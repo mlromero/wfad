@@ -1,0 +1,424 @@
+function Room(session){
+	this.publicBlogs=[];
+	this.map=null;
+	this.marker=null;
+	this.circle=null;
+	this.rectangle=null;
+	this.polyline=null;
+	this.polygon=null;
+	this.timeUnPublish=300000;
+	this.infowindow=new google.maps.InfoWindow();
+	this.adapter = new ClientAdapter("/CoupledObjectWebServer/");
+	this.adapter.joinSession(session);
+	this.adapter.start(500);
+	this.couple();
+}
+
+Room.prototype.getNewId = function(){
+	return Math.floor((Math.random()*100000)+1)+'_'+this.adapter.clientId;
+};
+
+Room.prototype.deleteOverlay = function(overlay){
+	if(overlay=='circle')
+		this.circle.setVisible(false);
+	else if(overlay=='rectangle')
+		this.rectangle.setVisible(false);
+	else if(overlay=='polyline')
+		this.polyline.setVisible(false);
+	else if(overlay=='polygon')
+		this.polygon.setVisible(false);
+	else if(overlay=='marker')
+		this.marker.setVisible(false);
+	drawingControl(true);
+};
+
+
+Room.prototype.addBlog = function(marker){
+	this.marker=marker;
+	listenerAdd('marker');
+	google.maps.event.addListener(marker,'click', function () {
+		listenerAdd('marker');
+	});
+};
+
+Room.prototype.addBlogCircle = function(circle){
+	this.circle=circle;	
+	listenerAdd('circle');
+	google.maps.event.addListener(circle,'click', function () {
+		listenerAdd('circle');
+	});
+};
+
+Room.prototype.addBlogPolygon = function(polygon){
+	this.polygon=polygon;
+	listenerAdd('polygon');
+	google.maps.event.addListener(polygon,'click', function () {
+		listenerAdd('polygon');
+	});
+};
+
+Room.prototype.addBlogPolyline = function(polyline){
+	this.polyline=polyline;
+	listenerAdd('polyline');
+	google.maps.event.addListener(polyline,'click', function () {
+		listenerAdd('polyline');
+	});
+};
+
+Room.prototype.addBlogRectangle = function(rectangle){
+	this.rectangle=rectangle;	
+	listenerAdd('rectangle');
+	google.maps.event.addListener(rectangle,'click', function () {
+		listenerAdd('rectangle');
+	});
+};
+
+
+Room.prototype.publishBlog = function(files){
+	this.marker.setVisible(false);
+	drawingControl(true);
+	var blogId=this.getNewId();
+	$("#blogId").val(blogId);
+	var time=getTime();
+	this.publish(blogId,this.marker.getPosition().lat(),
+			this.marker.getPosition().lng(),
+			$("#title").val(), $("#description").val(),files,time,$('#userName').val());
+};
+
+Room.prototype.publishBlogCircle = function(files){
+	this.circle.setVisible(false);
+	drawingControl(true);
+	var blogId=this.getNewId();
+	$("#blogId").val(blogId);
+	var time=getTime();
+	this.publishCircle(blogId,this.circle.getCenter().lat(),
+			this.circle.getCenter().lng(), this.circle.getRadius(),
+			$("#title").val(), $("#description").val(),files,time,$('#userName').val());
+};
+
+Room.prototype.publishBlogRectangle = function(files){
+	this.rectangle.setVisible(false);
+	drawingControl(true);
+	var sw=this.rectangle.getBounds().getSouthWest();
+	var ne=this.rectangle.getBounds().getNorthEast();
+	var boundArray=[sw.lat(),sw.lng(),ne.lat(),ne.lng()];
+	var blogId=this.getNewId();
+	$("#blogId").val(blogId);
+	var time=getTime();
+	this.publishRectangle(blogId,boundArray,
+			$("#title").val(), $("#description").val(),files,time,$('#userName').val());
+};
+
+Room.prototype.publishBlogPolyline = function(files){
+	this.polyline.setVisible(false);
+	drawingControl(true);
+	var pathArray=this.polyline.getPath().getArray();
+	var array=[];
+	var length=this.polyline.getPath().getLength();
+	for(var i=0,j=0;i<length;i++,j=j+2){
+		array[j]=pathArray[i].lat();
+		array[j+1]=pathArray[i].lng();
+	}
+	var blogId=this.getNewId();
+	$("#blogId").val(blogId);
+	var time=getTime();
+	this.publishPolyline(blogId,array,length,
+			$("#title").val(), $("#description").val(),files,time,$('#userName').val());
+};
+
+Room.prototype.publishBlogPolygon = function(files){
+	this.polygon.setVisible(false);
+	drawingControl(true);
+	var pathArray=this.polygon.getPath().getArray();
+	var array=[];
+	var length=this.polygon.getPath().getLength();
+	for(var i=0,j=0;i<length;i++,j=j+2){
+		array[j]=pathArray[i].lat();
+		array[j+1]=pathArray[i].lng();
+	}
+	var blogId=this.getNewId();
+	$("#blogId").val(blogId);
+	var time=getTime();
+	this.publishPolygon(blogId,array,length,
+			$("#title").val(), $("#description").val(),files,time,$('#userName').val());
+};
+
+Room.prototype.publish = function(blogId,lat,lng,title,description,files,time,userId){
+	var latlng = new google.maps.LatLng(lat,lng);
+	var marker = new google.maps.Marker({
+		position: latlng, 
+		draggable: false,
+		icon: "http://maps.google.com/mapfiles/ms/icons/red-dot.png",
+		map: this.map
+	});
+	var n=this.publicBlogs.length;
+	this.publicBlogs[n]=new Blog(marker,blogId,title,description,time,'marker',userId);	
+	google.maps.event.addListener(marker,'click', function () {
+		var overlay=$("#blogId").val();
+		if($("#add-form").hasClass("ui-panel-open") && 
+				  (overlay=='circle' || overlay=='rectangle' || overlay=='polyline' || overlay=='polygon' || overlay=='marker'))
+			return;
+		listenerPublish(blogId,title,description,files,time);		
+		app.currentRoom.infowindow.close();
+		app.currentRoom.infowindow.setContent(title);
+		app.currentRoom.infowindow.open(app.currentRoom.map,marker);
+	});
+	app.currentRoom.visit(blogId,userId);
+};
+
+Room.prototype.publishCircle = function(blogId,lat,lng,radius,title,description,files,time,userId){
+	var latlng = new google.maps.LatLng(lat,lng);
+    var circleOptions = {
+    	      strokeColor: "#B40404",
+    	      strokeWeight: 2,
+    	      fillColor: "#000000",
+    	      fillOpacity: 0.2,
+    	      map: this.map,
+    	      center: latlng,
+    	      radius: radius,
+    	      clickable: true,
+    	      editable: false,
+    	      draggable: false,
+    	      zIndex: 1
+    	    };
+    var circle = new google.maps.Circle(circleOptions);
+    var n=this.publicBlogs.length;
+	this.publicBlogs[n]=new Blog(circle,blogId,title,description,time,'circle',userId);
+	google.maps.event.addListener(circle,'click', function (ev) {
+		var overlay=$("#blogId").val();
+		if($("#add-form").hasClass("ui-panel-open") && 
+				  (overlay=='circle' || overlay=='rectangle' || overlay=='polyline' || overlay=='polygon' || overlay=='marker'))
+			return;
+		listenerPublish(blogId,title,description,files,time);
+		app.currentRoom.infowindow.close();
+		app.currentRoom.infowindow.setPosition(ev.latLng);
+		app.currentRoom.infowindow.setContent(title);
+		app.currentRoom.infowindow.open(app.currentRoom.map);
+	});
+	app.currentRoom.visit(blogId,userId);
+};
+
+Room.prototype.publishRectangle = function(blogId,boundsArray,title,description,files,time,userId){
+	var sw=new google.maps.LatLng(boundsArray[0],boundsArray[1]);
+	var ne=new google.maps.LatLng(boundsArray[2],boundsArray[3]);
+	var bnd=new google.maps.LatLngBounds(sw, ne);
+    var rectangleOptions = {
+    	      strokeColor: "#B40404",
+    	      strokeWeight: 2,
+    	      fillColor: "#000000",
+    	      fillOpacity: 0.2,
+    	      map: this.map,
+    	      bounds: bnd,
+    	      clickable: true,
+    	      editable: false,
+    	      draggable: false,
+    	      zIndex: 1
+    	    };
+    var rectangle = new google.maps.Rectangle(rectangleOptions);
+    var n=this.publicBlogs.length;
+	this.publicBlogs[n]=new Blog(rectangle,blogId,title,description,time,'rectangle',userId);
+	google.maps.event.addListener(rectangle,'click', function (ev) {
+		var overlay=$("#blogId").val();
+		if($("#add-form").hasClass("ui-panel-open") && 
+				  (overlay=='circle' || overlay=='rectangle' || overlay=='polyline' || overlay=='polygon' || overlay=='marker'))
+			return;
+		listenerPublish(blogId,title,description,files,time);
+		app.currentRoom.infowindow.close();
+		app.currentRoom.infowindow.setPosition(ev.latLng);
+		app.currentRoom.infowindow.setContent(title);
+		app.currentRoom.infowindow.open(app.currentRoom.map);
+	});
+	app.currentRoom.visit(blogId,userId);
+};
+
+Room.prototype.publishPolyline = function(blogId,pathArray,length,title,description,files,time,userId){
+	var mvcArray=[];
+	for(var i=0,j=0;i<length;i++,j=j+2){
+		mvcArray[i]=new google.maps.LatLng(pathArray[j],pathArray[j+1]);
+	}
+    var polylineOptions = {
+    	      strokeColor: "#B40404",
+    	      strokeWeight: 2,
+    	      map: this.map,
+    	      path: mvcArray,
+    	      clickable: true,
+    	      editable: false,
+    	      draggable: false,
+    	      zIndex: 1
+    	    };
+    var polyline = new google.maps.Polyline(polylineOptions);
+    var n=this.publicBlogs.length;
+	this.publicBlogs[n]=new Blog(polyline,blogId,title,description,time,'polyline',userId);
+	google.maps.event.addListener(polyline,'click', function (ev) {
+		var overlay=$("#blogId").val();
+		if($("#add-form").hasClass("ui-panel-open") && 
+				  (overlay=='circle' || overlay=='rectangle' || overlay=='polyline' || overlay=='polygon' || overlay=='marker'))
+			return;
+		listenerPublish(blogId,title,description,files,time);
+		app.currentRoom.infowindow.close();
+		app.currentRoom.infowindow.setPosition(ev.latLng);
+		app.currentRoom.infowindow.setContent(title);
+		app.currentRoom.infowindow.open(app.currentRoom.map);
+	});
+	app.currentRoom.visit(blogId,userId);
+};
+
+Room.prototype.publishPolygon = function(blogId,pathArray,length,title,description,files,time,userId){
+	var mvcArray=[];
+	for(var i=0,j=0;i<length;i++,j=j+2){
+		mvcArray[i]=new google.maps.LatLng(pathArray[j],pathArray[j+1]);
+	}
+    var polygonOptions = {
+    	      strokeColor: "#B40404",
+    	      strokeWeight: 2,
+    	      fillColor: "#000000",
+    	      fillOpacity: 0.2,
+    	      map: this.map,
+    	      paths: mvcArray,
+    	      clickable: true,
+    	      editable: false,
+    	      draggable: false,
+    	      zIndex: 1
+    	    };
+    var polygon = new google.maps.Polygon(polygonOptions);
+    var n=this.publicBlogs.length;
+	this.publicBlogs[n]=new Blog(polygon,blogId,title,description,time,'polygon',userId);
+	google.maps.event.addListener(polygon,'click', function (ev) {
+		var overlay=$("#blogId").val();
+		if($("#add-form").hasClass("ui-panel-open") && 
+				  (overlay=='circle' || overlay=='rectangle' || overlay=='polyline' || overlay=='polygon' || overlay=='marker'))
+			return;
+		listenerPublish(blogId,title,description,files,time);
+		app.currentRoom.infowindow.close();
+		app.currentRoom.infowindow.setPosition(ev.latLng);
+		app.currentRoom.infowindow.setContent(title);
+		app.currentRoom.infowindow.open(app.currentRoom.map);
+	});
+	app.currentRoom.visit(blogId,userId);
+};
+
+Room.prototype.addCommentRoom = function(id,blogId,body,userName,time){	
+	for(var i=0;i<this.publicBlogs.length;i++){
+		if(this.publicBlogs[i].id==blogId){
+			this.publicBlogs[i].addComment(id,userName,body,time);			
+			addOneComment(id,blogId,userName,body,time);
+			break;
+		}
+	}
+};
+
+Room.prototype.addSubCommentRoom = function(id,blogId,body,userName,time,commentIdRef,level){	
+	for(var i=0;i<this.publicBlogs.length;i++){
+		if(this.publicBlogs[i].id==blogId){
+			this.publicBlogs[i].addSubComment(id,userName,body,time,commentIdRef,level);			
+			addOneSubComment(id,blogId,userName,body,time,commentIdRef,level);
+			break;
+		}
+	}
+};
+
+Room.prototype.findUser = function(userName){
+	for(var i=0;i<app.users.length;i++){
+		if(app.users[i].name==userName)
+			return app.users[i];
+	}
+	var j=app.users.length;
+	app.users[j]=new User('0',userName);
+	return app.users[j];
+};
+
+
+Room.prototype.publishMyPosition = function(userId,lat,lng,time){
+	if(userId!=$("#userName").val() && new Date().getTime()-time<this.timeUnPublish){
+		var user=this.findUser(userId);
+		user.lastPublish=time;
+		publishPosition(user,lat,lng);			
+	}
+};
+
+Room.prototype.unPublish = function(){
+	for(var i=0;i<app.users.length;i++){
+		var diff=new Date().getTime()-app.users[i].lastPublish;
+		if(diff>this.timeUnPublish){
+			app.users[i].myLocation.setVisible(false);
+			app.users.splice(i,1);
+		}		
+	}
+};
+
+Room.prototype.rate = function(blogId,userName,score){	
+	rateBlog(blogId,userName,score);
+};
+
+
+Room.prototype.addLike = function(blogId){
+	addLikeByBlogId(blogId);
+};
+Room.prototype.addDislike = function(blogId){
+	addDislikeByBlogId(blogId);	
+};
+
+Room.prototype.doSearch = function(txt){
+	var text=txt.toLowerCase();
+	var matchingBlogs=[];
+	var j=0;
+	for(var i=0;i<this.publicBlogs.length;i++){
+		if(this.publicBlogs[i].id==text || this.publicBlogs[i].title.toLowerCase().indexOf(text) != -1 ||
+				this.publicBlogs[i].description.toLowerCase().indexOf(text) !== -1){
+			matchingBlogs[j++]=this.publicBlogs[i];
+		}else{
+			for(var k=0;k<this.publicBlogs[i].comments.length;k++){
+				if(this.publicBlogs[i].comments[k].body.toLowerCase().indexOf(text) != -1){
+					matchingBlogs[j++]=this.publicBlogs[i];
+					break;
+				}
+			}
+		}
+	}
+	createMatchingList(matchingBlogs);
+};
+
+Room.prototype.goToBlog = function(blogId){
+	var blog=loadBlog(blogId);
+	var latlng=null;
+	if(blog.type=='marker')
+		latlng=blog.overlay.getPosition();
+	else if(blog.type=='circle')
+		latlng=blog.overlay.getCenter();
+	else if(blog.type=='rectangle')
+		latlng=blog.overlay.getBounds().getSouthWest();
+	else if(blog.type=='polygon' || blog.type=='polyline')
+		latlng=blog.overlay.getPath().getAt(0);
+	this.map.setCenter(latlng);
+	this.infowindow.close();
+	this.infowindow.setPosition(latlng);
+	this.infowindow.setContent(blog.title);
+	this.infowindow.open(this.map);
+};
+
+Room.prototype.myBlogs = function(userId){
+	var matchingBlogs=[];
+	var j=0;
+	for(var i=0;i<this.publicBlogs.length;i++){
+		if(this.publicBlogs[i].userId==userId){
+			matchingBlogs[j++]=this.publicBlogs[i];
+		}
+	}
+	createMyMatchingList(matchingBlogs);
+};
+
+Room.prototype.visit = function(blogId,userId){
+	var blog=loadBlog(blogId);
+	var n=blog.visitors.length;
+	blog.visitors[n]=userId;
+};
+
+Room.prototype.couple=function(){
+	this.adapter.coupleObject("room",this,{
+		messageType:"EVENT",
+		explicitMapping:["publish","addCommentRoom","publishCircle",
+		                 "publishRectangle","publishPolyline","publishPolygon",
+		                 "publishMyPosition","addLike","addDislike","rate",
+		                 "addSubCommentRoom","visit"]
+	});
+};
