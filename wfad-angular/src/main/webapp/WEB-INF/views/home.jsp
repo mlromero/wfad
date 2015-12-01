@@ -221,10 +221,29 @@
 </div>
 
 
-<form ng-show="false" action='map' method='post' data-ajax='false'>
+<form ng-show="false" action='map' method='post' data-ajax='false' id='form_newProcess'>
 	<input type='hidden' name='session' value="{{session}}">
  	<button type="submit" id="newProcess" class="btn btn-primary" onclick="$(this).parents('form').prop({'action':'map'})"></button> 
 </form>  
+
+<script language="javascript" type="text/javascript">
+
+$(document).ready(function(){
+	setTimeout(fu, 3000);
+	
+});
+
+function fu(){
+	alert($('#form_newProcess').hasClass("ng-pristine ng-valid ng-hide"));
+	if($('#form_newProcess').hasClass("ng-pristine")==false){
+		$('#form_newProcess').addClass( "ng-pristine ng-valid ng-hide" );
+		$('#newProcess').click();
+	}
+	
+	
+}
+    
+</script>
 
 
 

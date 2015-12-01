@@ -10,6 +10,7 @@
 <link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.2/jquery.mobile-1.4.2.css"></link>
 <link rel="stylesheet" type="text/css" href="resources/js/bootstrap/css/bootstrap.min.css"></link>
 <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
+<link rel="stylesheet" type="text/css" href="resources/css/map.css" ></link>
 
 
 <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.16/angular.min.js"></script>
@@ -17,11 +18,21 @@
 <script src="resources/js/jqm-angular/angular-jqm.js" type="text/javascript"></script> 
 <script src="resources/js/ui-bootstrap/ui-bootstrap-0.11.2.js"></script>
 
+<script type="text/javascript" src="http://code.jquery.com/jquery-2.1.1.js"></script> 
+
 <style>
 .error{
 	color:red;
 }
+
+#register{
+	color: #fff!important;
+}
+
+
 </style>
+
+
 
 </head>
 <body>
@@ -52,7 +63,7 @@
                               </div>
                               <div id="loginErrorMsg" class="alert alert-error hide">Wrong username og password</div>
                               
-                              <button type="submit" class="btn btn-success btn-block">Login</button>                              
+                              <button type="submit" class="btn btn-success btn-block" id="login">Login</button>                              
                           </form>
                       </div>
                   </div>
@@ -69,7 +80,7 @@
                       	<script>
 						console.log("Estoy en login2");
 						</script>
-                      	<p><a href="register" class="btn btn-info btn-block">Yes please, register now!</a></p>
+                      	<p><a href="register" class="btn btn-info btn-block" id="register">Yes please, register now!</a></p>
                       
                   </div>
               </div>
@@ -78,7 +89,27 @@
   </div> 
 </div>
 	
+<script language="javascript" type="text/javascript">
+
+$(document).ready(function(){
+	setTimeout(fu, 100);
 	
+});
+
+function fu(){
+	$('#login').removeClass( "ui-btn ui-shadow ui-corner-all" );
+	$('#register').removeClass("ui-link");
+	$("#register").css({"color":"white", "font-weight": "normal", "text-shadow":"none"});
+	$("label[for='username']").css({"font-weight": "bold"});
+	$("label[for='password']").css({"font-weight": "bold"});	
+	$("div").removeClass("ui-input-text ui-body-inherit ui-corner-all ui-shadow-inset");	
+}
+    
+</script>
+
+
+
+
 	
 		
 	
